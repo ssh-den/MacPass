@@ -1,4 +1,10 @@
-### Upstream website and security notice
+# MacPass — Touch ID fork
+
+This fork of [MacPass](https://github.com/MacPass/MacPass) improves Touch ID unlock with a dedicated unlock view, a configurable keyboard shortcut, and automatic Touch ID prompts when global autotype needs to unlock a database. It also adds settings to expire stored Touch ID keys, clear them on sleep, or forget them manually.
+
+Thanks to [orestesgaolin](https://github.com/orestesgaolin/MacPass) and [Anand Hegde](https://github.com/anandghegde) ([PR #1334](https://github.com/MacPass/MacPass/pull/1334)) for sharing the Touch ID code that helped make this fork possible.
+
+## Upstream website and security notice
 
 * The website is now available under https://macpass.app
 * Update to [MacPass 0.8.2](https://github.com/MacPass/MacPass/releases/tag/0.8.2) **as soon as possible!**
@@ -8,7 +14,7 @@
 * Releases are **not** published on the website or via the former domain.
 * Only use releases on the official [Github page](https://github.com/MacPass/MacPass/releases).
 
-# MacPass
+## About MacPass
 
 MacPass began as an attempt to provide a nice looking feature complete KeePass client for macOS. To a degree this has been accomplished. Over the years, a couple of other awesome clients were created. With the decline of steady updates, MacPass fell behind in terms of UI and features. I hope we can revive the old fella and get cracking again!
 
