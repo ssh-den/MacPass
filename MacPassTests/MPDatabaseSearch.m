@@ -13,12 +13,12 @@
 @interface MPDatabaseSearch : XCTestCase
 
 @property (strong) KPKTree *tree;
-@property (weak) KPKGroup *includedGroup;
-@property (weak) KPKGroup *inheritingGroup;
-@property (weak) KPKGroup *excludedGroup;
-@property (weak) KPKEntry *entry1;
-@property (weak) KPKEntry *entry2;
-@property (weak) KPKEntry *entry3;
+@property (strong) KPKGroup *includedGroup;
+@property (strong) KPKGroup *inheritingGroup;
+@property (strong) KPKGroup *excludedGroup;
+@property (strong) KPKEntry *entry1;
+@property (strong) KPKEntry *entry2;
+@property (strong) KPKEntry *entry3;
 
 @end
 
@@ -29,10 +29,14 @@
   self.tree = [[KPKTree alloc] init];
   self.tree.root = [[KPKGroup alloc] init];
   
-  /* FIXME: weak! */
+  self.tree.root.isAutoTypeEnabled = KPKInheritYES;
   self.inheritingGroup = [self.tree createGroup:self.tree.root];
   self.includedGroup = [self.tree createGroup:self.tree.root];
   self.excludedGroup = [self.tree createGroup:self.tree.root];
+  // Creation configures nodes; addToGroup: attaches them to the tree.
+  [self.inheritingGroup addToGroup:self.tree.root];
+  [self.includedGroup addToGroup:self.tree.root];
+  [self.excludedGroup addToGroup:self.tree.root];
   self.inheritingGroup.isAutoTypeEnabled = KPKInherit;
   self.includedGroup.isAutoTypeEnabled = KPKInheritYES;
   self.excludedGroup.isAutoTypeEnabled = KPKInheritNO;
@@ -40,6 +44,9 @@
   self.entry1 = [self.tree createEntry:self.includedGroup];
   self.entry2 = [self.tree createEntry:self.inheritingGroup];
   self.entry3 = [self.tree createEntry:self.excludedGroup];
+  [self.entry1 addToGroup:self.includedGroup];
+  [self.entry2 addToGroup:self.inheritingGroup];
+  [self.entry3 addToGroup:self.excludedGroup];
 
   
   self.entry1.title = @"entry1";
@@ -53,12 +60,29 @@
 }
 
 - (void)tearDown {
+  self.entry1 = nil;
+  self.entry2 = nil;
+  self.entry3 = nil;
+  self.includedGroup = nil;
+  self.inheritingGroup = nil;
+  self.excludedGroup = nil;
   self.tree = nil;
   [super tearDown];
 }
 
-- (void)testSearch {
-  XCTFail(@"Missing Test");
+- (void)testAutotypeSearchRespectsGroupAndEntrySettings {
+  XCTAssertEqual(self.tree.allEntries.count, 3u);
+  NSArray *entries = self.tree.root.autotypeableChildEntries;
+  XCTAssertEqual(entries.count, 2u);
+  XCTAssertTrue([entries containsObject:self.entry1]);
+  XCTAssertTrue([entries containsObject:self.entry2]);
+  XCTAssertFalse([entries containsObject:self.entry3]);
+
+  self.tree.root.isAutoTypeEnabled = KPKInheritNO;
+  XCTAssertEqualObjects(self.tree.root.autotypeableChildEntries, (@[self.entry1]));
+
+  self.entry1.autotype.enabled = NO;
+  XCTAssertEqual(self.tree.root.autotypeableChildEntries.count, 0u);
 }
 
 @end

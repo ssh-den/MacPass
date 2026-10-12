@@ -26,8 +26,10 @@
   XCTAssertNil(error, @"No Error should occur on loading");
   XCTAssertNotNil(document, @"Document cannot be nil");
   XCTAssertTrue(document.encrypted, @"Loaded but unencrypted should be not decrypted");
-  XCTAssertTrue([document unlockWithPassword:@"1234" keyFileURL:nil error:&error], @"Should decrypt with password");
+  KPKCompositeKey *key = [[KPKCompositeKey alloc] initWithKeys:@[[KPKKey keyWithPassword:@"1234"]]];
+  XCTAssertTrue([document unlockWithPassword:key keyFileURL:nil error:&error], @"Should decrypt with password");
   XCTAssertNil(error, @"No Error should occur on unlocking with correct password");
+  XCTAssertFalse(document.encrypted);
   KPKFileVersion kdb = { KPKDatabaseFormatKdb, kKPKKdbFileVersion };
   XCTAssertEqual(NSOrderedSame, KPKFileVersionCompare(kdb, document.tree.minimumVersion), @"Minimal Version should not increase with KDB File loaded");
 }
@@ -40,8 +42,11 @@
   XCTAssertNil(error, @"No Error should occur on loading");
   XCTAssertNotNil(document, @"Document should not be nil");
   XCTAssertTrue(document.encrypted, @"Loaded but unencrypted should be not decrypted");
-  XCTAssertFalse([document unlockWithPassword:@"123" keyFileURL:nil error:&error], @"Decryption should fail");
-  XCTAssertNotNil(error, @"Error should occur on unlocking with correct password");
+  KPKCompositeKey *key = [[KPKCompositeKey alloc] initWithKeys:@[[KPKKey keyWithPassword:@"123"]]];
+  XCTAssertFalse([document unlockWithPassword:key keyFileURL:nil error:&error], @"Decryption should fail");
+  XCTAssertNotNil(error, @"Error should occur on unlocking with incorrect password");
+  XCTAssertTrue(document.encrypted);
+  XCTAssertNil(document.compositeKey);
 }
 
 - (void)testLoadDatabaseVerions2 {
@@ -51,14 +56,12 @@
   MPDocument *document = [[MPDocument alloc] initWithContentsOfURL:url ofType:@"kdbx" error:&error];
   XCTAssertNil(error, @"No Error should occur on loading");
   XCTAssertNotNil(document, @"Document cannot be nil");
-  /*
-  STAssertFalse(document.decrypted, @"Document is not decrypted after inital load");
-  STAssertTrue([document unlockWithPassword:@"1234" keyFileURL:nil], @"Should decrypt with password");
-  STAssertTrue(document.decrypted, @"Document is decrypted if decryptiong succeeds");
-  STAssertNil(document.treeV3, @"Tree should not be version1");
-  STAssertNotNil(document.treeV4, @"Tree shoud be version2");
-  STAssertTrue(document.version == MPDatabaseVersion4, @"Internal database version should be correct");
-   */
+  XCTAssertTrue(document.encrypted);
+  KPKCompositeKey *key = [[KPKCompositeKey alloc] initWithKeys:@[[KPKKey keyWithPassword:@"1234"]]];
+  XCTAssertTrue([document unlockWithPassword:key keyFileURL:nil error:&error]);
+  XCTAssertNil(error);
+  XCTAssertNotNil(document.tree);
+  XCTAssertFalse(document.encrypted);
 }
 
 @end

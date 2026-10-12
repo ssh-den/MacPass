@@ -19,21 +19,29 @@
 @implementation MPTestKeyMapper
 
 - (void)testKeyMapper {
-  
-  /*
-   We could set certain keyboard layouts to run this test invariantly
-   The simpler aproach is to go full circle to check if the desired character is the actual character we get
-   */
-  NSString *test = @"aB(]©®@ﬂ~±»";
-  
-  [test enumerateSubstringsInRange:NSMakeRange(0, test.length) options:NSStringEnumerationByComposedCharacterSequences usingBlock:^(NSString * _Nullable substring, NSRange substringRange, NSRange enclosingRange, BOOL * _Nonnull stop) {
-    /* we only support non-composed characters*/
-    if(substring.length == 1) {
-      MPModifiedKey key = [MPKeyMapper modifiedKeyForCharacter:substring];
-      NSString *result = [MPKeyMapper stringForModifiedKey:key];
-      XCTAssertEqualObjects(substring, result);
-    }    
-  }];
+  // Round-trip characters produced by this layout, including modified keys.
+  CGEventFlags modifiers[] = {0, kCGEventFlagMaskShift, kCGEventFlagMaskAlternate,
+                             kCGEventFlagMaskShift | kCGEventFlagMaskAlternate};
+  NSUInteger checked = 0;
+  for(CGKeyCode keyCode = 0; keyCode < 128; keyCode++) {
+    for(NSUInteger index = 0; index < sizeof(modifiers) / sizeof(modifiers[0]); index++) {
+      NSString *character = [MPKeyMapper stringForModifiedKey:MPMakeModifiedKey(modifiers[index], keyCode)];
+      if(character.length != 1) {
+        continue;
+      }
+      MPModifiedKey key = [MPKeyMapper modifiedKeyForCharacter:character];
+      XCTAssertNotEqual(key.keyCode, kMPUnknownKeyCode, @"No reverse mapping for %@", character);
+      XCTAssertEqualObjects([MPKeyMapper stringForModifiedKey:key], character);
+      checked++;
+    }
+  }
+  XCTAssertGreaterThan(checked, 0u);
+}
+
+- (void)testUnmappableCharacterReturnsUnknownKey {
+  MPModifiedKey key = [MPKeyMapper modifiedKeyForCharacter:@"😀"];
+  XCTAssertEqual(key.keyCode, kMPUnknownKeyCode);
+  XCTAssertNil([MPKeyMapper stringForModifiedKey:key]);
 }
 
 @end

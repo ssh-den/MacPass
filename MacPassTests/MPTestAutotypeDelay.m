@@ -61,16 +61,14 @@
 - (void)testDelayExecution {
   MPAutotypeDelay *delay = [[MPAutotypeDelay alloc] initWithDelay:200];
   XCTestExpectation *expectation = [self expectationWithDescription:delay.description];
+  NSTimeInterval startedAt = NSProcessInfo.processInfo.systemUptime;
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     [delay execute];
     [expectation fulfill];
   });
 
-  [self waitForExpectationsWithTimeout:(delay.delay/1000.0) handler:^(NSError *error) {
-    if (error != nil) {
-      NSLog(@"Error: %@", error.localizedDescription);
-    }
-  }];
+  [self waitForExpectationsWithTimeout:2 handler:nil];
+  XCTAssertGreaterThanOrEqual(NSProcessInfo.processInfo.systemUptime - startedAt, delay.delay / 1000.0);
 }
 
 @end

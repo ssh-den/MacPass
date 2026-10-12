@@ -328,6 +328,16 @@
 		FA9FD32C1FB5EDD3003CEDD6 /* AutotypeBuilderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA9FD32E1FB5EDD3003CEDD6 /* AutotypeBuilderView.xib */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		D0A100032F40000000A00001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4C77E35915B84A240093A587 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4C77E36115B84A240093A587;
+			remoteInfo = MacPass;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		4CC5D36618A1332000AF7FA8 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -2009,6 +2019,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				D0A100042F40000000A00001 /* PBXTargetDependency */,
 			);
 			name = MacPassTests;
 			productName = MacPassTests;
@@ -2436,6 +2447,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D0A100042F40000000A00001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4C77E36115B84A240093A587 /* MacPass */;
+			targetProxy = D0A100032F40000000A00001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		4C0B533A205C1516003D277E /* PickcharsView.xib */ = {
