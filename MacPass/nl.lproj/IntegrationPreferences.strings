@@ -43,3 +43,7 @@
 /* Class = "NSTextFieldCell"; title = "If enabled attached files will be copied to a temporary location for preview and deleted after the preview is closed."; ObjectID = "WmI-IB-Aso"; */
 "WmI-IB-Aso.title" = "Bijlagen worden voor de voorvertoning gekopieerd naar een tijdelijke locatie en daarna automatisch weer verwijderd.";
 
+/* Touch ID unlock */
+"tId-en-bCl.title" = "Touch ID-sneltoets inschakelen";
+"tId-sh-lCl.title" = "Toetscombinatie:";
+"tId-sh-wCl.title" = "";

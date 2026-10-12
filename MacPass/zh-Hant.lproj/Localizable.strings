@@ -722,4 +722,12 @@
 /* Yesterday */
 "YESTERDAY" = "昨天";
 
-
+/* Touch ID unlock */
+"TOUCHID_DISABLED" = "已停用";
+"TOUCHID_PERSISTENT_KEY_STORAGE" = "持久儲存";
+"TOUCHID_TRANSIENT_KEY_STORAGE" = "暫時儲存";
+"PASSWORD_INPUT_TOUCH_ID_SHORTCUT" = "按 %@ 使用 Touch ID 解鎖";
+"PASSWORD_INPUT_TOUCH_ID_PROVISIONING" = "請先使用密碼及/或金鑰檔案解鎖一次，以便為此資料庫啟用 Touch ID。";
+"PASSWORD_INPUT_UNLOCK_WITH_TOUCH_ID" = "使用 Touch ID 解鎖";
+"PASSWORD_INPUT_UNLOCK_METHOD" = "解鎖方式";
+"PASSWORD_INPUT_REMOVE_KEY_FILE" = "移除金鑰檔案";

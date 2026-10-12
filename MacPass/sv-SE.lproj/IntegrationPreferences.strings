@@ -37,3 +37,8 @@
 
 /* Class = "NSButtonCell"; title = "Include Entry Title for matches"; ObjectID = "tmL-dT-D0G"; */
 "tmL-dT-D0G.title" = "Inkludera kontots titel vid matchning";
+
+/* Touch ID unlock */
+"tId-en-bCl.title" = "Aktivera Touch ID-kortkommando";
+"tId-sh-lCl.title" = "Kortkommando";
+"tId-sh-wCl.title" = "Kortkommando saknar tangent";

@@ -718,3 +718,12 @@
 /* Yesterday */
 "YESTERDAY" = "Gisteren";
 
+/* Touch ID unlock */
+"TOUCHID_DISABLED" = "Uitgeschakeld";
+"TOUCHID_PERSISTENT_KEY_STORAGE" = "Permanent";
+"TOUCHID_TRANSIENT_KEY_STORAGE" = "Tijdelijk";
+"PASSWORD_INPUT_TOUCH_ID_SHORTCUT" = "Druk op %@ om te ontgrendelen met Touch ID";
+"PASSWORD_INPUT_TOUCH_ID_PROVISIONING" = "Ontgrendel deze database eenmaal met uw wachtwoord en/of sleutelbestand om Touch ID in te schakelen.";
+"PASSWORD_INPUT_UNLOCK_WITH_TOUCH_ID" = "Ontgrendel met Touch ID";
+"PASSWORD_INPUT_UNLOCK_METHOD" = "Ontgrendelmethode";
+"PASSWORD_INPUT_REMOVE_KEY_FILE" = "Sleutelbestand verwijderen";

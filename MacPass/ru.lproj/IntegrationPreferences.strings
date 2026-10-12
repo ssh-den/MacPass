@@ -43,3 +43,7 @@
 /* Class = "NSTextFieldCell"; title = "If enabled attached files will be copied to a temporary location for preview and deleted after the preview is closed."; ObjectID = "WmI-IB-Aso"; */
 "WmI-IB-Aso.title" = "Если включено, прикрепленные файлы будет скопированы во временную папку для предпросмора и удалены, когда предпросмотр будет закрыт.";
 
+/* Touch ID unlock */
+"tId-en-bCl.title" = "Включить хоткей Touch ID";
+"tId-sh-lCl.title" = "Хоткей";
+"tId-sh-wCl.title" = "Задайте клавишу для хоткея";

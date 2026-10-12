@@ -43,3 +43,7 @@
 /* Class = "NSTextFieldCell"; title = "If enabled attached files will be copied to a temporary location for preview and deleted after the preview is closed."; ObjectID = "WmI-IB-Aso"; */
 "WmI-IB-Aso.title" = "Si activée, les fichiers joints seront copiés dans une localisation temporaire pour la prévisualisation puis supprimés quand la fenêtre sera fermée. Il s'agit d'un risque de sécurité potentiel !";
 
+/* Touch ID unlock */
+"tId-en-bCl.title" = "Activer le raccourci Touch ID";
+"tId-sh-lCl.title" = "Raccourci";
+"tId-sh-wCl.title" = "Aucune touche n'est affectée au raccourci";

@@ -808,3 +808,12 @@
 /* Yesterday */
 "YESTERDAY" = "Ieri";
 
+/* Touch ID unlock */
+"TOUCHID_DISABLED" = "Disattivato";
+"TOUCHID_PERSISTENT_KEY_STORAGE" = "Persistente";
+"TOUCHID_TRANSIENT_KEY_STORAGE" = "Temporaneo";
+"PASSWORD_INPUT_TOUCH_ID_SHORTCUT" = "Premi %@ per sbloccare con Touch ID";
+"PASSWORD_INPUT_TOUCH_ID_PROVISIONING" = "Sblocca una volta con la password e/o il file chiave per attivare Touch ID per questo database.";
+"PASSWORD_INPUT_UNLOCK_WITH_TOUCH_ID" = "Sblocca con Touch ID";
+"PASSWORD_INPUT_UNLOCK_METHOD" = "Metodo di sblocco";
+"PASSWORD_INPUT_REMOVE_KEY_FILE" = "Rimuovi file chiave";

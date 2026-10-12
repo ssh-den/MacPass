@@ -75,6 +75,8 @@ NSString *const kMPSettingsKeyTouchIdKeyDateStore                               
 NSString *const kMPSettingsKeyTouchIdKeyTimeOut                                 = @"TouchIdKeyTimeOut";
 NSString *const kMPSettingsKeyClearTouchIdKeysOnSleep                           = @"ClearTouchIdKeysOnSleep";
 
+NSString *const kMPSettingsKeyTouchIdUnlockShortcutEnabled = @"TouchIdUnlockShortcutEnabled";
+NSString *const kMPSettingsKeyTouchIdUnlockShortcutKeyDataKey = @"TouchIdUnlockShortcutKeyDataKey";
 
 NSString *const kMPSettingsKeyEntrySearchFilterContext                          = @"EntrySearchFilterContext";
 
@@ -195,6 +197,7 @@ NSString *const kMPDepricatedSettingsKeyEntryTouchIdDatabaseEncryptedKeyFormat  
       kMPSettingsKeyGloablAutotypeAlwaysShowCandidateSelection: @NO,
       kMPSettingsKeyUseUnifiedToolbar: @YES, // Do not use unified toolbar under Big Sur and above
       kMPSettingsKeyAllowScreenshots: @NO, // Do not allow screenshots or screen recordings of MacPass
+      kMPSettingsKeyTouchIdUnlockShortcutEnabled: @NO,
       kMPSettingsKeyFocusSearchAfterUnlock: @NO, // Do not enter search directly after unlocking the database
       kMPSettingsKeyUsePrivateBrowsingWhenOpeningURLs: @NO // No private mode when option URLs by default
     };

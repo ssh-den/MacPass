@@ -43,3 +43,8 @@
 
 /* Class = "NSButtonCell"; title = "Include Entry Title for matches"; ObjectID = "tmL-dT-D0G"; */
 "tmL-dT-D0G.title" = "Очікувати співпадіння назви запису";
+
+/* Touch ID unlock */
+"tId-en-bCl.title" = "Увімкнути скорочення Touch ID";
+"tId-sh-lCl.title" = "Скорочення";
+"tId-sh-wCl.title" = "У скорочення не вистачає клавіші";

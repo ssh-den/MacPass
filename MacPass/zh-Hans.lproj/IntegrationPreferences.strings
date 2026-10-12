@@ -57,3 +57,8 @@
 
 /* Class = "NSTextFieldCell"; Touch ID key renewal explanation; ObjectID = "LyC-Hd-ecK"; */
 "LyC-Hd-ecK.title" = "重置后，在使用密码和/或密钥文件成功解锁数据库之前，MacPass 将无法再使用 Touch ID 解锁任何数据库。";
+
+/* Touch ID unlock */
+"tId-en-bCl.title" = "启用 Touch ID 快捷键";
+"tId-sh-lCl.title" = "快捷键";
+"tId-sh-wCl.title" = "快捷键不完全";

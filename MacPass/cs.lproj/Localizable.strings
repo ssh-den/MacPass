@@ -886,3 +886,12 @@
 /* Yesterday */
 "YESTERDAY" = "Včera";
 
+/* Touch ID unlock */
+"TOUCHID_DISABLED" = "Vypnuto";
+"TOUCHID_PERSISTENT_KEY_STORAGE" = "Trvalé";
+"TOUCHID_TRANSIENT_KEY_STORAGE" = "Dočasné";
+"PASSWORD_INPUT_TOUCH_ID_SHORTCUT" = "Stisknutím %@ odemknete pomocí Touch ID";
+"PASSWORD_INPUT_TOUCH_ID_PROVISIONING" = "Jednou databázi odemkněte heslem a/nebo souborem klíče, abyste pro ni povolili Touch ID.";
+"PASSWORD_INPUT_UNLOCK_WITH_TOUCH_ID" = "Odemknout pomocí Touch ID";
+"PASSWORD_INPUT_UNLOCK_METHOD" = "Způsob odemknutí";
+"PASSWORD_INPUT_REMOVE_KEY_FILE" = "Odebrat soubor klíče";

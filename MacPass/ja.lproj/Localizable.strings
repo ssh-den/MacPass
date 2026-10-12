@@ -843,3 +843,13 @@
 
 /* Yesterday */
 "YESTERDAY" = "昨日";
+
+/* Touch ID unlock */
+"TOUCHID_DISABLED" = "無効";
+"TOUCHID_PERSISTENT_KEY_STORAGE" = "永続的";
+"TOUCHID_TRANSIENT_KEY_STORAGE" = "一時的";
+"PASSWORD_INPUT_TOUCH_ID_SHORTCUT" = "%@ を押して Touch ID でロック解除";
+"PASSWORD_INPUT_TOUCH_ID_PROVISIONING" = "このデータベースで Touch ID を有効にするには、パスワードまたはキーファイルで一度ロック解除してください。";
+"PASSWORD_INPUT_UNLOCK_WITH_TOUCH_ID" = "Touch ID でロック解除";
+"PASSWORD_INPUT_UNLOCK_METHOD" = "ロック解除方法";
+"PASSWORD_INPUT_REMOVE_KEY_FILE" = "キーファイルを削除";

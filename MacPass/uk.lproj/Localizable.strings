@@ -820,3 +820,12 @@
 /* Yesterday */
 "YESTERDAY" = "Вчора";
 
+/* Touch ID unlock */
+"TOUCHID_DISABLED" = "Вимкнено";
+"TOUCHID_PERSISTENT_KEY_STORAGE" = "Постійне";
+"TOUCHID_TRANSIENT_KEY_STORAGE" = "Тимчасове";
+"PASSWORD_INPUT_TOUCH_ID_SHORTCUT" = "Натисніть %@, щоб відімкнути за допомогою Touch ID";
+"PASSWORD_INPUT_TOUCH_ID_PROVISIONING" = "Один раз відімкніть базу паролем та/або файлом ключа, щоб увімкнути для неї Touch ID.";
+"PASSWORD_INPUT_UNLOCK_WITH_TOUCH_ID" = "Відімкнути за допомогою Touch ID";
+"PASSWORD_INPUT_UNLOCK_METHOD" = "Спосіб відімкнення";
+"PASSWORD_INPUT_REMOVE_KEY_FILE" = "Видалити файл ключа";

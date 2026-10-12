@@ -49,3 +49,8 @@
 
 /* Class = "NSButtonCell"; title = "Include Entry Title for matches"; ObjectID = "tmL-dT-D0G"; */
 "tmL-dT-D0G.title" = "Zahrnout shodu názvu záznamu";
+
+/* Touch ID unlock */
+"tId-en-bCl.title" = "Aktivovat klávesovou zkratku Touch ID";
+"tId-sh-lCl.title" = "Zkratka";
+"tId-sh-wCl.title" = "Chybí klávesová zkratka";

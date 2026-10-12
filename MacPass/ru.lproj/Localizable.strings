@@ -843,3 +843,13 @@
 
 /* Favicon download method: use Google's favicon fetching service */
 "FAVICON_DOWNLOAD_METHOD_GOOGLE" = "Google";
+
+/* Touch ID unlock */
+"TOUCHID_DISABLED" = "Отключено";
+"TOUCHID_PERSISTENT_KEY_STORAGE" = "Постоянное";
+"TOUCHID_TRANSIENT_KEY_STORAGE" = "Временное";
+"PASSWORD_INPUT_TOUCH_ID_SHORTCUT" = "Нажмите %@, чтобы разблокировать с помощью Touch ID";
+"PASSWORD_INPUT_TOUCH_ID_PROVISIONING" = "Один раз разблокируйте базу паролем и/или файлом ключа, чтобы включить для неё Touch ID.";
+"PASSWORD_INPUT_UNLOCK_WITH_TOUCH_ID" = "Разблокировать с Touch ID";
+"PASSWORD_INPUT_UNLOCK_METHOD" = "Способ разблокировки";
+"PASSWORD_INPUT_REMOVE_KEY_FILE" = "Удалить файл ключа";

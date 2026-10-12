@@ -29,6 +29,8 @@ APPKIT_EXTERN NSString *const kMPSettingsKeyTouchIdKeyDateStore;            // N
 APPKIT_EXTERN NSString *const kMPSettingsKeyTouchIdKeyTimeOut;              // Seconds; 0 disables expiration
 APPKIT_EXTERN NSString *const kMPSettingsKeyClearTouchIdKeysOnSleep;        // BOOL
 
+APPKIT_EXTERN NSString *const kMPSettingsKeyTouchIdUnlockShortcutEnabled;   // BOOL
+APPKIT_EXTERN NSString *const kMPSettingsKeyTouchIdUnlockShortcutKeyDataKey; // NSData - encoded DDHotKey
 
 /* Clipboard */
 APPKIT_EXTERN NSString *const kMPSettingsKeyPasteboardClearTimeout;

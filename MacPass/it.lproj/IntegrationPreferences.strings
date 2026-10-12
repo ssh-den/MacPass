@@ -37,3 +37,8 @@
 
 /* Class = "NSButtonCell"; title = "Include Title for matches"; ObjectID = "tmL-dT-D0G"; */
 "tmL-dT-D0G.title" = "Includi Titolo per corrispondenze";
+
+/* Touch ID unlock */
+"tId-en-bCl.title" = "Abilita la scorciatoia Touch ID";
+"tId-sh-lCl.title" = "Scorciatoia";
+"tId-sh-wCl.title" = "Manca una chiave alla scorciatoia";

@@ -24,12 +24,27 @@
 #import "KeePassKit/KeePassKit.h"
 
 @class KPKCompositeKey;
+@class DDHotKey;
+
+typedef NS_OPTIONS(NSUInteger, MPPasswordInputPresentationState) {
+  MPPasswordInputPresentationManualOnly          = 0,
+  MPPasswordInputPresentationTouchIDAvailable    = 1 << 0,
+  MPPasswordInputPresentationProvisioningNeeded  = 1 << 1,
+  MPPasswordInputPresentationShortcutAvailable   = 1 << 2,
+};
 
 @interface MPPasswordInputController : MPViewController <NSTouchBarDelegate>
 
 typedef BOOL (^passwordInputCompletionBlock)(KPKCompositeKey *key, NSURL* keyFileURL, BOOL didCancel, NSError *__autoreleasing*error);
 
 - (void)requestPasswordWithMessage:(NSString *)message cancelLabel:(NSString *)cancelLabel completionHandler:(passwordInputCompletionBlock)completionHandler;
+
++ (MPPasswordInputPresentationState)presentationStateForTouchIDMode:(NSInteger)touchIDMode
+                                                        keyAvailable:(BOOL)keyAvailable
+                                                     shortcutEnabled:(BOOL)shortcutEnabled
+                                                       shortcutValid:(BOOL)shortcutValid
+                                                            supported:(BOOL)supported;
++ (NSString *)touchIDShortcutHintForHotKey:(DDHotKey *)shortcut;
 
 
 @end

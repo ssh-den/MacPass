@@ -1,7 +1,11 @@
 #import <XCTest/XCTest.h>
+#import <Carbon/Carbon.h>
 #import <KeePassKit/KeePassKit.h>
-#import "MPTouchIdCompositeKeyStore.h"
+
+#import "MPPasswordInputController.h"
 #import "MPSettingsHelper.h"
+#import "DDHotKey+MacPassAdditions.h"
+#import "MPTouchIdCompositeKeyStore.h"
 #import "MPConstants.h"
 #import "MPSecurityPreferencesController.h"
 
@@ -60,6 +64,27 @@
     return NULL;
   }
   return (SecKeyRef)CFRetain(self.publicKey);
+}
+@end
+
+@interface MPPasswordInputController (PresentationTests)
+- (IBAction)unlockMethodChanged:(NSSegmentedControl *)sender;
+- (BOOL)_event:(NSEvent *)event matchesHotKey:(DDHotKey *)hotKey;
+- (IBAction)_submit:(id)sender;
+- (IBAction)unlockWithTouchID:(id)sender;
+- (BOOL)_touchIdIsUnlockAvailable;
+@end
+
+@interface MPTestTouchIDActionController : MPPasswordInputController
+@property NSUInteger touchIDRequests;
+@end
+
+@implementation MPTestTouchIDActionController
+- (BOOL)_touchIdIsUnlockAvailable {
+  return YES;
+}
+- (IBAction)unlockWithTouchID:(id)sender {
+  self.touchIDRequests++;
 }
 @end
 
@@ -141,6 +166,23 @@
   XCTAssertEqualObjects(tags, (@[@0, @3600, @14400, @86400, @604800]));
 }
 
+- (void)testUnavailableKeyReturnsTouchIDCardToManualInput {
+  MPPasswordInputController *controller = [[MPPasswordInputController alloc] init];
+  __block BOOL submitted = NO;
+  [controller requestPasswordWithMessage:nil cancelLabel:nil completionHandler:^BOOL(KPKCompositeKey *key, NSURL *url, BOOL cancel, NSError **error) {
+    submitted = YES;
+    return YES;
+  }];
+  NSView *touchCard = [controller valueForKey:@"touchIdCard"];
+  NSView *manualCard = [controller valueForKey:@"manualCard"];
+  touchCard.hidden = NO;
+  manualCard.hidden = YES;
+  [controller _submit:nil];
+  XCTAssertTrue(touchCard.hidden);
+  XCTAssertFalse(manualCard.hidden);
+  XCTAssertFalse(submitted);
+}
+
 - (void)testCompositeKeyEncryptionRoundTrip {
   CFErrorRef errorRef = NULL;
   SecKeyRef privateKey = SecKeyCreateRandomKey((__bridge CFDictionaryRef)@{
@@ -180,6 +222,162 @@
   NSError *error = nil;
   XCTAssertNil([store encryptedDataForCompositeKey:[[KPKCompositeKey alloc] init] error:&error]);
   XCTAssertEqualObjects(error, store.retrievalError);
+}
+
+- (MPPasswordInputPresentationState)stateForMode:(MPTouchIDKeyStorage)mode
+                                             key:(BOOL)key
+                                         enabled:(BOOL)enabled
+                                           valid:(BOOL)valid
+                                       supported:(BOOL)supported {
+  return [MPPasswordInputController presentationStateForTouchIDMode:mode
+                                                       keyAvailable:key
+                                                    shortcutEnabled:enabled
+                                                      shortcutValid:valid
+                                                           supported:supported];
+}
+
+- (void)testDisabledModeAlwaysUsesManualPresentation {
+  XCTAssertEqual([self stateForMode:MPTouchIDKeyStorageDisabled key:YES enabled:YES valid:YES supported:YES],
+                 MPPasswordInputPresentationManualOnly);
+}
+
+- (void)testEnabledModesWithoutKeyRequireProvisioning {
+  XCTAssertEqual([self stateForMode:MPTouchIDKeyStorageTransient key:NO enabled:NO valid:NO supported:YES],
+                 MPPasswordInputPresentationProvisioningNeeded);
+  XCTAssertEqual([self stateForMode:MPTouchIDKeyStoragePersistent key:NO enabled:NO valid:NO supported:YES],
+                 MPPasswordInputPresentationProvisioningNeeded);
+}
+
+- (void)testEnabledModesWithKeyOfferTouchID {
+  XCTAssertEqual([self stateForMode:MPTouchIDKeyStorageTransient key:YES enabled:NO valid:NO supported:YES],
+                 MPPasswordInputPresentationTouchIDAvailable);
+  XCTAssertEqual([self stateForMode:MPTouchIDKeyStoragePersistent key:YES enabled:NO valid:NO supported:YES],
+                 MPPasswordInputPresentationTouchIDAvailable);
+}
+
+- (void)testShortcutRequiresEnabledAndValidHotKey {
+  MPPasswordInputPresentationState validState = [self stateForMode:MPTouchIDKeyStoragePersistent key:YES enabled:YES valid:YES supported:YES];
+  XCTAssertTrue((validState & MPPasswordInputPresentationShortcutAvailable) != 0);
+
+  MPPasswordInputPresentationState disabledState = [self stateForMode:MPTouchIDKeyStoragePersistent key:YES enabled:NO valid:YES supported:YES];
+  XCTAssertFalse((disabledState & MPPasswordInputPresentationShortcutAvailable) != 0);
+  MPPasswordInputPresentationState invalidState = [self stateForMode:MPTouchIDKeyStoragePersistent key:YES enabled:YES valid:NO supported:YES];
+  XCTAssertFalse((invalidState & MPPasswordInputPresentationShortcutAvailable) != 0);
+}
+
+- (void)testUnsupportedSystemsAlwaysUseManualPresentation {
+  XCTAssertEqual([self stateForMode:MPTouchIDKeyStoragePersistent key:YES enabled:YES valid:YES supported:NO],
+                 MPPasswordInputPresentationManualOnly);
+}
+
+- (void)testUnknownModeUsesManualPresentation {
+  XCTAssertEqual([MPPasswordInputController presentationStateForTouchIDMode:99 keyAvailable:YES shortcutEnabled:YES shortcutValid:YES supported:YES], MPPasswordInputPresentationManualOnly);
+}
+
+- (void)testTouchBarUnlockUsesTheSelectedTouchIDCard {
+  MPTestTouchIDActionController *controller = [[MPTestTouchIDActionController alloc] initWithNibName:nil bundle:nil];
+  __block BOOL requestedManualPassword = NO;
+  [controller requestPasswordWithMessage:nil cancelLabel:nil completionHandler:^BOOL(KPKCompositeKey *key, NSURL *url, BOOL cancel, NSError **error) {
+    requestedManualPassword = YES;
+    return YES;
+  }];
+  NSView *card = [controller valueForKey:@"touchIdCard"];
+  card.hidden = NO;
+  [controller _submit:nil];
+  XCTAssertEqual(controller.touchIDRequests, 1u);
+  XCTAssertFalse(requestedManualPassword);
+}
+
+- (void)testCancelKeepsItsLabelAndRemovesShortcutMonitor {
+  MPPasswordInputController *controller = [[MPPasswordInputController alloc] initWithNibName:nil bundle:nil];
+  __block BOOL cancelled = NO;
+  [controller requestPasswordWithMessage:nil cancelLabel:@"Abort Merge" completionHandler:^BOOL(KPKCompositeKey *key, NSURL *url, BOOL cancel, NSError **error) {
+    cancelled = cancel;
+    return YES;
+  }];
+  NSButton *button = [controller valueForKey:@"cancelButton"];
+  XCTAssertEqualObjects(button.title, @"Abort Merge");
+  [controller _submit:button];
+  XCTAssertTrue(cancelled);
+  XCTAssertNil([controller valueForKey:@"touchIdShortcutMonitor"]);
+}
+
+- (void)testShortcutHintUsesDDHotKeyGlyphFormatting {
+  // A function key has the same label in every keyboard layout.
+  DDHotKey *hotKey = [DDHotKey hotKeyWithKeyCode:kVK_F6 modifierFlags:NSEventModifierFlagControl|NSEventModifierFlagOption task:nil];
+  NSString *hint = [MPPasswordInputController touchIDShortcutHintForHotKey:hotKey];
+  XCTAssertTrue([hint containsString:@"⌃⌥F6"], @"Unexpected shortcut hint: %@", hint);
+}
+
+- (void)testShortcutIgnoresCapsLockAndNumericPadFlags {
+  MPPasswordInputController *controller = [[MPPasswordInputController alloc] initWithNibName:nil bundle:nil];
+  DDHotKey *hotKey = [DDHotKey hotKeyWithKeyData:[DDHotKey hotKeyDataWithKeyCode:kVK_ANSI_M modifierFlags:kCGEventFlagMaskControl|kCGEventFlagMaskAlternate]];
+  NSEvent *event = [NSEvent keyEventWithType:NSEventTypeKeyDown
+                                  location:NSZeroPoint
+                             modifierFlags:NSEventModifierFlagControl|NSEventModifierFlagOption|NSEventModifierFlagCapsLock|NSEventModifierFlagNumericPad
+                                 timestamp:0 windowNumber:0 context:nil
+                                characters:@"M" charactersIgnoringModifiers:@"m" isARepeat:NO keyCode:kVK_ANSI_M];
+  XCTAssertTrue([controller _event:event matchesHotKey:hotKey]);
+  DDHotKey *otherKey = [DDHotKey hotKeyWithKeyData:[DDHotKey hotKeyDataWithKeyCode:kVK_ANSI_N modifierFlags:kCGEventFlagMaskControl|kCGEventFlagMaskAlternate]];
+  XCTAssertFalse([controller _event:event matchesHotKey:otherKey]);
+  DDHotKey *otherModifiers = [DDHotKey hotKeyWithKeyCode:kVK_ANSI_M modifierFlags:NSEventModifierFlagCommand|NSEventModifierFlagOption task:nil];
+  XCTAssertFalse([controller _event:event matchesHotKey:otherModifiers]);
+}
+
+- (void)testCardSelectionUpdatesVisibilityAndFocus {
+  MPPasswordInputController *controller = [[MPPasswordInputController alloc] initWithNibName:nil bundle:nil];
+  NSView *view = controller.view;
+  NSWindow *window = [[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 508, 489)
+                                                 styleMask:NSWindowStyleMaskTitled
+                                                   backing:NSBackingStoreBuffered
+                                                     defer:NO];
+  window.contentView = view;
+  NSSegmentedControl *control = [controller valueForKey:@"unlockMethodControl"];
+  NSView *touchCard = [controller valueForKey:@"touchIdCard"];
+  NSView *manualCard = [controller valueForKey:@"manualCard"];
+  NSButton *touchButton = [controller valueForKey:@"touchIdButton"];
+  NSTextField *passwordField = [controller valueForKey:@"passwordTextField"];
+
+  control.selectedSegment = 1;
+  [controller unlockMethodChanged:control];
+  XCTAssertFalse(manualCard.hidden);
+  XCTAssertTrue(touchCard.hidden);
+  XCTAssertEqual(window.firstResponder, passwordField.currentEditor);
+
+  control.selectedSegment = 0;
+  [controller unlockMethodChanged:control];
+  XCTAssertTrue(manualCard.hidden);
+  XCTAssertFalse(touchCard.hidden);
+  XCTAssertEqual(window.firstResponder, touchButton);
+}
+
+- (void)testUnlockPanelUsesSharedAlignmentAndAccessibleTouchIDAction {
+  MPPasswordInputController *controller = [[MPPasswordInputController alloc] initWithNibName:nil bundle:nil];
+  NSView *view = controller.view;
+  [view layoutSubtreeIfNeeded];
+
+  NSView *manualCard = [controller valueForKey:@"manualCard"];
+  NSView *touchCard = [controller valueForKey:@"touchIdCard"];
+  NSView *panel = manualCard.superview;
+  NSTextField *passwordField = [controller valueForKey:@"passwordTextField"];
+  NSView *keyPathControl = [controller valueForKey:@"keyPathControl"];
+  NSButton *showPasswordButton = [controller valueForKey:@"togglePasswordButton"];
+  NSButton *resetKeyFileButton = [controller valueForKey:@"resetKeyFileButton"];
+  NSButton *unlockButton = [controller valueForKey:@"unlockButton"];
+  NSButton *touchIdButton = [controller valueForKey:@"touchIdButton"];
+  NSView *touchIdFooter = [controller valueForKey:@"touchIdFooter"];
+
+  XCTAssertEqualWithAccuracy(NSMidX(panel.frame), NSMidX(view.bounds), 0.5);
+  XCTAssertTrue(NSEqualRects(manualCard.frame, touchCard.frame));
+  NSRect passwordAlignmentRect = [passwordField alignmentRectForFrame:passwordField.frame];
+  NSRect keyPathAlignmentRect = [keyPathControl alignmentRectForFrame:keyPathControl.frame];
+  NSRect unlockAlignmentRect = [unlockButton alignmentRectForFrame:unlockButton.frame];
+  XCTAssertEqualWithAccuracy(NSMinX(passwordAlignmentRect), NSMinX(keyPathAlignmentRect), 0.5);
+  XCTAssertEqualWithAccuracy(NSMaxX(showPasswordButton.frame), NSMaxX(resetKeyFileButton.frame), 0.5);
+  XCTAssertEqualWithAccuracy(NSMaxX(unlockAlignmentRect), NSMaxX(keyPathAlignmentRect), 0.5);
+  XCTAssertEqualWithAccuracy(NSMidX(touchIdFooter.frame), NSMidX(panel.bounds), 0.5);
+  XCTAssertEqualObjects(touchIdButton.accessibilityLabel, touchIdButton.title);
+  XCTAssertTrue([touchIdButton.title containsString:@"Touch ID"]);
 }
 
 @end

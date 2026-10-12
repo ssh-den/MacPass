@@ -865,3 +865,13 @@
 
 /* Yesterday */
 "YESTERDAY" = "Wczoraj";
+
+/* Touch ID unlock */
+"TOUCHID_DISABLED" = "Wyłączone";
+"TOUCHID_PERSISTENT_KEY_STORAGE" = "Trwałe";
+"TOUCHID_TRANSIENT_KEY_STORAGE" = "Tymczasowe";
+"PASSWORD_INPUT_TOUCH_ID_SHORTCUT" = "Naciśnij %@, aby odblokować za pomocą Touch ID";
+"PASSWORD_INPUT_TOUCH_ID_PROVISIONING" = "Odblokuj bazę raz za pomocą hasła i/lub pliku klucza, aby włączyć dla niej Touch ID.";
+"PASSWORD_INPUT_UNLOCK_WITH_TOUCH_ID" = "Odblokuj za pomocą Touch ID";
+"PASSWORD_INPUT_UNLOCK_METHOD" = "Metoda odblokowania";
+"PASSWORD_INPUT_REMOVE_KEY_FILE" = "Usuń plik klucza";
