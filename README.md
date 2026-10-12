@@ -1,11 +1,11 @@
-### macpassapp.org was dropped due to a fuck-up on my part.
+### Upstream website and security notice
 
 * The website is now available under https://macpass.app
 * Update to [MacPass 0.8.2](https://github.com/MacPass/MacPass/releases/tag/0.8.2) **as soon as possible!**
 * If – for whatever reason – you still run version 0.8.1 or older please disable the automatic plugin update in the plugin settings to prevent any malicious activity.
 * MacPass will refuse to load unsigned or wrongly signed plugins if you uncheck the "load unsecure plugins". This is the default behaviour. If you have not changed this, you're set!
 * If plugins get disabled due to a version downgrade in the bundled plugins.json file, check "load incompatible plugins". This setting does **not** enable unsigned plugins to be loaded!
-* Releases are **not**  published on the website or via the https://macpassapp.org url.
+* Releases are **not** published on the website or via the former domain.
 * Only use releases on the official [Github page](https://github.com/MacPass/MacPass/releases).
 
 # MacPass
