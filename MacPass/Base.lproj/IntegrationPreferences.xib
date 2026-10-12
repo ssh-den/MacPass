@@ -22,6 +22,7 @@
                 <outlet property="matchURLCheckBox" destination="8Wz-lo-AXG" id="jTp-2n-oO7"/>
                 <outlet property="openPreferencesButton" destination="jai-b6-Qv4" id="Uq1-un-Dga"/>
                 <outlet property="sendCommandForControlCheckBox" destination="VK8-z4-2ci" id="nIa-ap-QfD"/>
+                <outlet property="soundOnNoAutotypeMatchCheckBox" destination="sNM-ck-box" id="sNM-out-let"/>
                 <outlet property="touchIdHotKeyTextField" destination="tId-sh-hKf" id="tId-sh-out"/>
                 <outlet property="touchIdHotkeyWarningTextField" destination="tId-sh-wTf" id="tId-wn-out"/>
                 <outlet property="view" destination="1" id="18"/>
@@ -30,16 +31,16 @@
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customView translatesAutoresizingMaskIntoConstraints="NO" id="1">
-            <rect key="frame" x="0.0" y="0.0" width="425" height="712"/>
+            <rect key="frame" x="0.0" y="0.0" width="425" height="736"/>
             <subviews>
                 <box autoresizesSubviews="NO" verticalHuggingPriority="500" borderType="line" title="Autotype" translatesAutoresizingMaskIntoConstraints="NO" id="P9N-HM-wER">
-                    <rect key="frame" x="17" y="294" width="391" height="398"/>
+                    <rect key="frame" x="17" y="294" width="391" height="422"/>
                     <view key="contentView" id="faU-Ok-HJ3">
-                        <rect key="frame" x="4" y="5" width="383" height="378"/>
+                        <rect key="frame" x="4" y="5" width="383" height="402"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="250" verticalStackHuggingPriority="250" horizontalHuggingPriority="249" translatesAutoresizingMaskIntoConstraints="NO" id="j52-9L-k7c">
-                                <rect key="frame" x="15" y="15" width="353" height="353"/>
+                                <rect key="frame" x="15" y="15" width="353" height="377"/>
                                 <subviews>
                                     <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="hMJ-Mo-xOM">
                                         <rect key="frame" x="-2" y="311" width="357" height="42"/>
@@ -125,6 +126,13 @@
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
                                     </textField>
+                                    <button horizontalHuggingPriority="249" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sNM-ck-box">
+                                        <rect key="frame" x="-2" y="155" width="355" height="18"/>
+                                        <buttonCell key="cell" type="check" title="Play sound when Global Autotype finds no match" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="sNM-ck-cel">
+                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                    </button>
                                     <button horizontalHuggingPriority="249" translatesAutoresizingMaskIntoConstraints="NO" id="DAX-V8-Say">
                                         <rect key="frame" x="-2" y="131" width="355" height="18"/>
                                         <buttonCell key="cell" type="check" title="Include Entry Title for matches" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="tmL-dT-D0G">
@@ -182,8 +190,10 @@
                                     <integer value="1000"/>
                                     <integer value="1000"/>
                                     <integer value="1000"/>
+                                    <integer value="1000"/>
                                 </visibilityPriorities>
                                 <customSpacing>
+                                    <real value="3.4028234663852886e+38"/>
                                     <real value="3.4028234663852886e+38"/>
                                     <real value="3.4028234663852886e+38"/>
                                     <real value="3.4028234663852886e+38"/>

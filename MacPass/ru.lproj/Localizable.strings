@@ -853,3 +853,5 @@
 "PASSWORD_INPUT_UNLOCK_WITH_TOUCH_ID" = "Разблокировать с Touch ID";
 "PASSWORD_INPUT_UNLOCK_METHOD" = "Способ разблокировки";
 "PASSWORD_INPUT_REMOVE_KEY_FILE" = "Удалить файл ключа";
+
+"GLOBAL_AUTOTYPE_SOUND_ON_NO_MATCH" = "Звук, если глобальный автоввод не нашёл совпадений";

@@ -905,3 +905,5 @@
 "PASSWORD_INPUT_UNLOCK_WITH_TOUCH_ID" = "Unlock with Touch ID";
 "PASSWORD_INPUT_UNLOCK_METHOD" = "Unlock method";
 "PASSWORD_INPUT_REMOVE_KEY_FILE" = "Remove key file";
+
+"GLOBAL_AUTOTYPE_SOUND_ON_NO_MATCH" = "Play sound when Global Autotype finds no match";

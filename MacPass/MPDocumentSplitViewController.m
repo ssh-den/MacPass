@@ -11,6 +11,7 @@
 #import "MPEntryViewController.h"
 #import "MPInspectorViewController.h"
 #import "MPSettingsHelper.h"
+#import "MPDocument.h"
 
 @interface MPDocumentSplitViewController ()
 
@@ -98,6 +99,15 @@
 - (void)showOutline {
   // FIXME: do not require this to be called directly
   [self.outlineViewController showOutline];
+}
+
+- (BOOL)validateToolbarItem:(NSToolbarItem *)theItem {
+  if(theItem.action == @selector(toggleInspector:)) {
+    return YES;
+  }
+  // Keep document restrictions for the other toolbar actions.
+  NSDocument *document = self.view.window.windowController.document;
+  return document ? [document validateUserInterfaceItem:theItem] : [super validateUserInterfaceItem:theItem];
 }
 
 - (void)toggleInspector:(id)sender {

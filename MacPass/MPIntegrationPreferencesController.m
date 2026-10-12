@@ -68,6 +68,8 @@
   [self.matchURLCheckBox bind:NSValueBinding toObject:defaultsController withKeyPath:[MPSettingsHelper defaultControllerPathForKey:kMPSettingsKeyAutotypeMatchURL] options:nil];
   [self.matchHostCheckBox bind:NSValueBinding toObject:defaultsController withKeyPath:[MPSettingsHelper defaultControllerPathForKey:kMPSettingsKeyAutotypeMatchHost] options:nil];
   [self.matchTagsCheckBox bind:NSValueBinding toObject:defaultsController withKeyPath:[MPSettingsHelper defaultControllerPathForKey:kMPSettingsKeyAutotypeMatchTags] options:nil];
+  self.soundOnNoAutotypeMatchCheckBox.title = NSLocalizedStringWithDefaultValue(@"GLOBAL_AUTOTYPE_SOUND_ON_NO_MATCH", nil, NSBundle.mainBundle, @"Play sound when Global Autotype finds no match", @"Global Autotype feedback setting");
+  [self.soundOnNoAutotypeMatchCheckBox bind:NSValueBinding toObject:defaultsController withKeyPath:[MPSettingsHelper defaultControllerPathForKey:kMPSettingsKeyGlobalAutotypeSoundOnNoMatch] options:nil];
   
   [self.sendCommandForControlCheckBox bind:NSValueBinding
                                   toObject:defaultsController
