@@ -44,6 +44,9 @@
   
   NSUInteger minPartsCount = MIN(partsA.count, partsB.count);
   if(minPartsCount == 0) {
+    if(partsA.count == partsB.count) {
+      return NSOrderedSame;
+    }
     if(partsA.count == 0) {
       return NSOrderedAscending;
     }

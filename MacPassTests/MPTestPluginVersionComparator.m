@@ -51,6 +51,8 @@
 
 - (void)testVersionCompare {
   XCTAssertEqual(NSOrderedSame, [MPPluginVersionComparator compareVersion:@"" toVersion:@""]);
+  XCTAssertEqual(NSOrderedAscending, [MPPluginVersionComparator compareVersion:@"" toVersion:@"1"]);
+  XCTAssertEqual(NSOrderedDescending, [MPPluginVersionComparator compareVersion:@"1" toVersion:@""]);
   XCTAssertEqual(NSOrderedSame, [MPPluginVersionComparator compareVersion:@"*" toVersion:@"*"]);
   XCTAssertEqual(NSOrderedSame, [MPPluginVersionComparator compareVersion:@"1.0.1" toVersion:@"*"]);
   XCTAssertEqual(NSOrderedSame, [MPPluginVersionComparator compareVersion:@"*" toVersion:@"1.0.1"]);
