@@ -38,6 +38,7 @@ typedef NS_OPTIONS(NSUInteger, MPPasswordInputPresentationState) {
 typedef BOOL (^passwordInputCompletionBlock)(KPKCompositeKey *key, NSURL* keyFileURL, BOOL didCancel, NSError *__autoreleasing*error);
 
 - (void)requestPasswordWithMessage:(NSString *)message cancelLabel:(NSString *)cancelLabel completionHandler:(passwordInputCompletionBlock)completionHandler;
+- (void)requestPasswordWithMessage:(NSString *)message cancelLabel:(NSString *)cancelLabel attemptTouchID:(BOOL)attemptTouchID completionHandler:(passwordInputCompletionBlock)completionHandler;
 
 + (MPPasswordInputPresentationState)presentationStateForTouchIDMode:(NSInteger)touchIDMode
                                                         keyAvailable:(BOOL)keyAvailable
