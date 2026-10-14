@@ -13,18 +13,13 @@ case $key in
     shift # past argument
     shift # past value
     ;;
-    -a|--appleid)
-    APPLEID="$2"
-    shift # past argument
-    shift # past value
-    ;;
     -t|--teamid)
     TEAMID="$2"
     shift # past argument
     shift # past value
     ;;
-    -p|--password)
-    PASSWORD="$2"
+    -k|--keychain-profile)
+    NOTARY_PROFILE="$2"
     shift # past argument
     shift # past value
     ;;
@@ -70,8 +65,10 @@ if [[ -z "${ENTITLEMENTS}" ]]; then
     echo "Missing entitlements"
     exit -1
 fi
-if [[ -z "${APPLEID}" ]]; then
-    echo "Missing Apple id"
+# Credentials stay in the keychain instead of the process list and shell history:
+#   xcrun notarytool store-credentials <profile> --apple-id <id> --team-id <team>
+if [[ -z "${NOTARY_PROFILE}" ]]; then
+    echo "Missing notarization keychain profile"
     exit -1
 fi
 if [[ -z "${TEAMID}" ]]; then
@@ -92,9 +89,6 @@ fi
 # A team can only register its own identifiers, so a fork passes its own.
 BUNDLE_ID="${BUNDLE_ID:-com.hicknhacksoftware.MacPass}"
 
-# Entitlement files name the App Group with $(DEVELOPMENT_TEAM), which only
-# Xcode expands. Nested helpers such as Sparkle's Autoupdate.app have no profile
-# and must not carry the restricted AutoFill entitlements.
 ENTITLEMENTS_FOLDER="$(mktemp -d)"
 trap 'rm -rf "${ENTITLEMENTS_FOLDER}"' EXIT
 
@@ -114,55 +108,63 @@ check_profile() {
 }
 check_profile "${APP_PROFILE}" "${BUNDLE_ID}"
 check_profile "${EXTENSION_PROFILE}" "${BUNDLE_ID}.AutoFill"
+# Entitlement files use build settings that only Xcode expands: the App Group
+# names $(DEVELOPMENT_TEAM), the keychain group the App ID. Expand them here;
+# an unexpanded restricted entitlement does not match the profile.
+expand_entitlements() {
+    sed -e "s/\$(DEVELOPMENT_TEAM)/${TEAMID}/g" -e "s/\$(AppIdentifierPrefix)/${TEAMID}./g" \
+        -e "s/\$(PRODUCT_BUNDLE_IDENTIFIER)/$2/g" "$1" > "$3"
+    if grep -q '\$(' "$3"; then
+        echo "Unexpanded build setting in $1"
+        exit -1
+    fi
+}
 APP_ENTITLEMENTS="${ENTITLEMENTS_FOLDER}/MacPass.entitlements"
-NESTED_ENTITLEMENTS="${ENTITLEMENTS_FOLDER}/Nested.entitlements"
 APPEX_ENTITLEMENTS="${ENTITLEMENTS_FOLDER}/MacPassAutoFill.entitlements"
-sed "s/\$(DEVELOPMENT_TEAM)/${TEAMID}/g" "${ENTITLEMENTS}" > "${APP_ENTITLEMENTS}"
-sed "s/\$(DEVELOPMENT_TEAM)/${TEAMID}/g" "${EXTENSION_ENTITLEMENTS}" > "${APPEX_ENTITLEMENTS}"
-cp "${APP_ENTITLEMENTS}" "${NESTED_ENTITLEMENTS}"
-/usr/libexec/PlistBuddy -c "Delete :com.apple.developer.authentication-services.autofill-credential-provider" "${NESTED_ENTITLEMENTS}"
-/usr/libexec/PlistBuddy -c "Delete :com.apple.security.application-groups" "${NESTED_ENTITLEMENTS}"
+expand_entitlements "${ENTITLEMENTS}" "${BUNDLE_ID}" "${APP_ENTITLEMENTS}"
+expand_entitlements "${EXTENSION_ENTITLEMENTS}" "${BUNDLE_ID}.AutoFill" "${APPEX_ENTITLEMENTS}"
 APP_PROFILE="$(cd "$(dirname "${APP_PROFILE}")" && pwd)/$(basename "${APP_PROFILE}")"
 EXTENSION_PROFILE="$(cd "$(dirname "${EXTENSION_PROFILE}")" && pwd)/$(basename "${EXTENSION_PROFILE}")"
-if [[ -z "${PASSWORD}" ]]; then
-    echo "Missing password"
-    exit -1
-fi
 
-DERIVED_DATA_FOLDER="${TMPDIR}"
+# Works from any directory; argument paths above are relative to the caller's.
+REPO_FOLDER="$(cd "$(dirname "$0")/.." && pwd)"
+DERIVED_DATA_FOLDER="${REPO_FOLDER}"/build/release
 BUILD_FOLDER="${DERIVED_DATA_FOLDER}"/Build/Products/Release
 APP_BUNDLE=MacPass.app
 APP_BUNDLE_ZIP="${APP_BUNDLE}".zip
 APP_FRAMEWORK_PATH="${APP_BUNDLE}"/Contents/Frameworks
 SPARKLE_FRAMEWORK="${APP_FRAMEWORK_PATH}"/Sparkle.framework
-SPARKLE_AUTOUPDATE_BUNDLE="${SPARKLE_FRAMEWORK}"/Resources/Autoupdate.app
-SPARKLE_FILEOP="${SPARKLE_AUTOUPDATE_BUNDLE}"/Contents/MacOS/fileop
+SPARKLE_VERSION="${SPARKLE_FRAMEWORK}"/Versions/B
 TRANSFORMERKIT_FRAMEWORK="${APP_FRAMEWORK_PATH}"/TransformerKit.framework
 KEEPASSKIT_FRAMEWORK="${APP_FRAMEWORK_PATH}"/KeePassKit.framework
 KISSXML_FRAMEWORK="${APP_FRAMEWORK_PATH}"/KissXML.framework
 HNHUI_FRAMEWORK="${APP_FRAMEWORK_PATH}"/HNHUi.framework
 APPEX_BUNDLE="${APP_BUNDLE}"/Contents/PlugIns/MacPassAutoFill.appex
-cd ..
+cd "${REPO_FOLDER}"
 echo "Building..."
 # Use the signing team and identifier for Info.plist expansion as well as the entitlements.
 # Everything is signed below, so Xcode must not look for development profiles.
 xcodebuild build -configuration Release -project MacPass.xcodeproj -scheme MacPass DEVELOPMENT_TEAM="${TEAMID}" MACPASS_APP_BUNDLE_IDENTIFIER="${BUNDLE_ID}" CODE_SIGNING_ALLOWED=NO -derivedDataPath "${DERIVED_DATA_FOLDER}"
 cd "${BUILD_FOLDER}"
 echo ""
-echo "Signing Sparkle - fileop..."
-codesign --sign "${IDENTITY}" --options runtime --timestamp --force --entitlements "${NESTED_ENTITLEMENTS}" "${SPARKLE_FILEOP}"
-echo "Signing Sparkle - Autoupdate..."
-codesign --sign "${IDENTITY}" --options runtime --timestamp --force --entitlements "${NESTED_ENTITLEMENTS}" "${SPARKLE_AUTOUPDATE_BUNDLE}"
+# Sparkle 2 helpers, innermost first, as Sparkle documents: they keep their own
+# entitlements (the Downloader's sandbox) and take none of MacPass's.
+echo "Signing Sparkle - XPC services..."
+codesign --sign "${IDENTITY}" --options runtime --timestamp --force "${SPARKLE_VERSION}"/XPCServices/Installer.xpc
+codesign --sign "${IDENTITY}" --options runtime --timestamp --force --preserve-metadata=entitlements "${SPARKLE_VERSION}"/XPCServices/Downloader.xpc
+echo "Signing Sparkle - Autoupdate and Updater..."
+codesign --sign "${IDENTITY}" --options runtime --timestamp --force "${SPARKLE_VERSION}"/Autoupdate
+codesign --sign "${IDENTITY}" --options runtime --timestamp --force "${SPARKLE_VERSION}"/Updater.app
 echo "Signing Sparkle..."
-codesign --sign "${IDENTITY}" --options runtime --timestamp --force --entitlements "${NESTED_ENTITLEMENTS}" "${SPARKLE_FRAMEWORK}"
+codesign --sign "${IDENTITY}" --options runtime --timestamp --force "${SPARKLE_FRAMEWORK}"
 echo "Signing TransformerKit..."
-codesign --sign "${IDENTITY}" --options runtime --timestamp --force --entitlements "${NESTED_ENTITLEMENTS}" "${TRANSFORMERKIT_FRAMEWORK}"
+codesign --sign "${IDENTITY}" --options runtime --timestamp --force "${TRANSFORMERKIT_FRAMEWORK}"
 echo "Signing HNHUi..."
-codesign --sign "${IDENTITY}" --options runtime --timestamp --force --entitlements "${NESTED_ENTITLEMENTS}" "${HNHUI_FRAMEWORK}"
+codesign --sign "${IDENTITY}" --options runtime --timestamp --force "${HNHUI_FRAMEWORK}"
 echo "Signing KeePassKit - KissXML..."
-codesign --sign "${IDENTITY}" --options runtime --timestamp --force --entitlements "${NESTED_ENTITLEMENTS}" "${KISSXML_FRAMEWORK}"
+codesign --sign "${IDENTITY}" --options runtime --timestamp --force "${KISSXML_FRAMEWORK}"
 echo "Signing KeePassKit..."
-codesign --sign "${IDENTITY}" --options runtime --timestamp --force --entitlements "${NESTED_ENTITLEMENTS}" "${KEEPASSKIT_FRAMEWORK}"
+codesign --sign "${IDENTITY}" --options runtime --timestamp --force "${KEEPASSKIT_FRAMEWORK}"
 echo "Embedding provisioning profiles..."
 cp "${APP_PROFILE}" "${APP_BUNDLE}"/Contents/embedded.provisionprofile
 cp "${EXTENSION_PROFILE}" "${APPEX_BUNDLE}"/Contents/embedded.provisionprofile
@@ -171,9 +173,15 @@ codesign --sign "${IDENTITY}" --options runtime --timestamp --force --entitlemen
 echo "Signing MacPass..."
 codesign --sign "${IDENTITY}" --options runtime --timestamp --force --entitlements "${APP_ENTITLEMENTS}" "${APP_BUNDLE}"
 echo ""
-echo "Archiving..."
+echo "Archiving for notarization..."
 ditto -c -k --keepParent "${APP_BUNDLE}" "${APP_BUNDLE_ZIP}"
 echo "Requesting Notarization..."
-xcrun notarytool submit "${APP_BUNDLE_ZIP}" --apple-id "${APPLEID}" --team-id "${TEAMID}" --password "${PASSWORD}" --wait
-#xcrun stapler staple "${APP_BUNDLE}"
-#xmllint --xpath "/plist/dict/key[contains(text(),'success-message')]::following-sibling" status.xml
+xcrun notarytool submit "${APP_BUNDLE_ZIP}" --keychain-profile "${NOTARY_PROFILE}" --wait
+# Stapling fails unless notarization was accepted. The ticket lets Gatekeeper
+# verify the app offline; the first archive predates it, so archive again.
+echo "Stapling..."
+xcrun stapler staple "${APP_BUNDLE}"
+echo "Archiving..."
+rm -f "${APP_BUNDLE_ZIP}"
+ditto -c -k --keepParent "${APP_BUNDLE}" "${APP_BUNDLE_ZIP}"
+echo "Release archive: ${BUILD_FOLDER}/${APP_BUNDLE_ZIP}"
