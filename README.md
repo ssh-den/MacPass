@@ -1,6 +1,6 @@
 # MacPass — Touch ID fork
 
-This fork of [MacPass](https://github.com/MacPass/MacPass) improves Touch ID unlock with a dedicated unlock view, a configurable keyboard shortcut, and automatic Touch ID prompts when global autotype needs to unlock a database. It also adds settings to expire stored Touch ID keys, clear them on sleep, or forget them manually.
+This fork of [MacPass](https://github.com/MacPass/MacPass) improves Touch ID unlock with a dedicated unlock view, a configurable keyboard shortcut, and automatic Touch ID prompts when global autotype needs to unlock a database. It also adds settings to expire stored Touch ID keys, clear them on sleep, or forget them manually. On macOS 13 and later it can fill website passwords from the active database through macOS Password AutoFill.
 
 Thanks to [orestesgaolin](https://github.com/orestesgaolin/MacPass) and [Anand Hegde](https://github.com/anandghegde) ([PR #1334](https://github.com/MacPass/MacPass/pull/1334)) for sharing the Touch ID code that helped make this fork possible.
 
@@ -74,6 +74,15 @@ entitlements from this file, so do not override `PRODUCT_BUNDLE_IDENTIFIER`,
 `MACOSX_DEPLOYMENT_TARGET`, `CODE_SIGN_ENTITLEMENTS` or `ENABLE_HARDENED_RUNTIME`
 in it. MacPass refuses an AutoFill extension without hardened runtime or with
 `get-task-allow`; with a debugger attached to the extension, AutoFill reports it as rejected.
+
+### Native Password AutoFill (macOS 13+)
+
+Enable “Password AutoFill for the active database” in Settings → Integration and
+enable MacPass in the macOS Password AutoFill settings. Only the active, unlocked
+database is offered, and passwords are released only after Touch ID or the macOS password.
+The extension never opens database files itself. Ad hoc builds compile and run
+tests but cannot act as a system AutoFill provider. See
+[the AutoFill architecture notes](MacPassAutoFill/README.md).
 
 ## Help
 
