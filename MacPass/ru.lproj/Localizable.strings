@@ -855,3 +855,6 @@
 "PASSWORD_INPUT_REMOVE_KEY_FILE" = "Удалить файл ключа";
 
 "GLOBAL_AUTOTYPE_SOUND_ON_NO_MATCH" = "Звук, если глобальный автоввод не нашёл совпадений";
+
+"AUTOFILL_UNLOCK_MESSAGE" = "Разблокируйте эту базу, затем снова выберите подсказку.";
+"AUTOFILL_UNSUPPORTED_PLACEHOLDER" = "Запись содержит неподдерживаемый плейсхолдер или небезопасную/неразрешённую ссылку.";

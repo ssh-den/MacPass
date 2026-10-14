@@ -68,6 +68,7 @@ FOUNDATION_EXPORT NSString *const MPDocumentGroupKey;
 @interface MPDocument : NSDocument <MPTargetNodeResolving, MPModelChangeObserving>
 
 @property (nonatomic, readonly, assign) BOOL encrypted;
+@property (nonatomic, readonly) BOOL autoFillUnavailable; // read on the main thread
 @property (nonatomic, readonly, assign) NSUInteger unlockCount; // Amount of times the Document was unlocked;
 
 @property (strong, readonly, nonatomic) KPKTree *tree;

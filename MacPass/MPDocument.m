@@ -28,6 +28,8 @@
 #import "MPActionHelper.h"
 #import "MPSettingsHelper.h"
 #import "MPNotifications.h"
+#import "MPAutoFillCoordinator.h"
+#import <stdatomic.h>
 #import "MPConstants.h"
 #import "MPSavePanelAccessoryViewController.h"
 #import "MPTreeDelegate.h"
@@ -62,6 +64,9 @@ NSString *const MPDocumentGroupKey                            = @"MPDocumentGrou
 @private
   BOOL _didLockFile;
   BOOL _shoudlSaveOnLock;
+  /* Set on the file presenter queue, read on the main queue */
+  atomic_bool _lockedForFileChange;
+  BOOL _autoFillMergePending;
 }
 
 @property (nonatomic, assign) NSUInteger unlockCount;
@@ -83,6 +88,7 @@ NSString *const MPDocumentGroupKey                            = @"MPDocumentGrou
 @property (weak) IBOutlet NSImageView *warningViewImage;
 
 @property (atomic, assign) BOOL lockedForFileChange;
+@property (nonatomic, assign) BOOL autoFillMergePending;
 
 @end
 
@@ -244,6 +250,31 @@ NSString *const MPDocumentGroupKey                            = @"MPDocumentGrou
   [super close];
 }
 
+- (void)_autoFillStateDidChange {
+  [NSNotificationCenter.defaultCenter postNotificationName:MPAutoFillDocumentsChangedNotification object:self];
+}
+
+- (BOOL)autoFillUnavailable { return self.lockedForFileChange || self.autoFillMergePending; }
+
+/* Both flags change AutoFill eligibility; changing them notifies the coordinator */
+- (BOOL)lockedForFileChange { return atomic_load(&_lockedForFileChange); }
+- (void)setLockedForFileChange:(BOOL)lockedForFileChange {
+  if(atomic_exchange(&_lockedForFileChange, lockedForFileChange) != lockedForFileChange) [self _autoFillStateDidChange];
+}
+
+- (BOOL)autoFillMergePending { return _autoFillMergePending; }
+- (void)setAutoFillMergePending:(BOOL)autoFillMergePending {
+  NSAssert(NSThread.isMainThread, @"Merges run on the main thread");
+  if(_autoFillMergePending == autoFillMergePending) return;
+  _autoFillMergePending = autoFillMergePending;
+  [self _autoFillStateDidChange];
+}
+
+- (void)updateChangeCount:(NSDocumentChangeType)change {
+  [super updateChangeCount:change];
+  [self _autoFillStateDidChange];
+}
+
 - (BOOL)shouldRunSavePanelWithAccessoryView {
   return NO;
 }
@@ -290,7 +321,7 @@ NSString *const MPDocumentGroupKey                            = @"MPDocumentGrou
     
     /* Set the flag in this call! */
     self.lockedForFileChange = YES;
-    
+
     /* Dispatch the alert to the main queue */
     dispatch_async(dispatch_get_main_queue(), ^{
       MPFileChangeStrategy strategy = (MPFileChangeStrategy)[NSUserDefaults.standardUserDefaults integerForKey:kMPSettingsKeyFileChangeStrategy];
@@ -368,7 +399,9 @@ NSString *const MPDocumentGroupKey                            = @"MPDocumentGrou
 
 - (void)mergeWithContentsFromURL:(NSURL *)url key:(KPKCompositeKey *)key {
   BOOL mergeKDB;
-  
+  /* No AutoFill from the outdated tree until the merge completes or is cancelled */
+  self.autoFillMergePending = YES;
+
   KPKFileVersion version = [KPKFormat.sharedFormat fileVersionForData:[NSData dataWithContentsOfURL:url]];
   mergeKDB = (version.format == KPKDatabaseFormatKdb);
   
@@ -386,6 +419,7 @@ NSString *const MPDocumentGroupKey                            = @"MPDocumentGrou
           break;
         case NSAlertSecondButtonReturn:
         default:
+          self.autoFillMergePending = NO;
           break;
       }
     }];
@@ -408,6 +442,7 @@ NSString *const MPDocumentGroupKey                            = @"MPDocumentGrou
     [self updateChangeCount:NSChangeDone]; // Register change since we did mark document as edited
     NSDictionary *attributes = [NSFileManager.defaultManager attributesOfItemAtPath:url.path error:nil];
     self.fileModificationDate = attributes.fileModificationDate; // Update to date on disk to prevent alert pop up on save!
+    self.autoFillMergePending = NO;
     NSUserNotification *notification = [[NSUserNotification alloc] init];
     notification.title = NSApp.applicationName;
     notification.informativeText = NSLocalizedString(@"AUTO_MERGE_NOTIFICATION_TEXT", @"Sucessfully merged external changes");
@@ -428,6 +463,9 @@ NSString *const MPDocumentGroupKey                            = @"MPDocumentGrou
                                           if(!didCancel) {
           [self _mergeWithContentsFromURL:url key:compositeKey options:options];
         }
+        else {
+          self.autoFillMergePending = NO;
+        }
         // just return yes regardless since we will display the sheet again if needed!
         return YES;
       }];
@@ -438,7 +476,7 @@ NSString *const MPDocumentGroupKey                            = @"MPDocumentGrou
       /* unable to merge */
       NSAlert *alert = [NSAlert alertWithError:error];
       [alert beginSheetModalForWindow:self.windowForSheet completionHandler:^(NSModalResponse returnCode) {
-        // do nothing;
+        self.autoFillMergePending = NO;
       }];
     }
   }
@@ -455,6 +493,8 @@ NSString *const MPDocumentGroupKey                            = @"MPDocumentGrou
     for(NSWindow *sheet in self.windowForSheet.sheets) {
       [self.windowForSheet endSheet:sheet];
     }
+    /* Ending the sheets abandons a merge waiting for a key or confirmation */
+    self.autoFillMergePending = NO;
     if(self.documentEdited || self.shouldSaveOnLock) {
       [self saveDocumentWithDelegate:self didSaveSelector:@selector(_lockDatabaseForDocument:didSave:contextInfo:) contextInfo:NULL];
       self.shouldSaveOnLock = NO;
@@ -588,6 +628,7 @@ NSString *const MPDocumentGroupKey                            = @"MPDocumentGrou
       self.treeDelegate = [[MPTreeDelegate alloc] initWithDocument:self];
     }
     self.tree.delegate = self.treeDelegate;
+    [self _autoFillStateDidChange];
   }
 }
 

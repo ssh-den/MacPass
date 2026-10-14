@@ -1,6 +1,9 @@
 # Xcode
 build/*
 .local-build.xcconfig
+# Local AutoFill tools for manual platform checks
+MacPassAutoFill/PlatformTests/
+scripts/check-autofill-transport.sh
 *.pbxuser
 !default.pbxuser
 *.mode1v3

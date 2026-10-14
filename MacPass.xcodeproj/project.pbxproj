@@ -6,6 +6,57 @@
 	objectVersion = 54;
 	objects = {
 
+/* Native AutoFill platform gate */
+		AF0000000000000000000050 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MacPassAutoFill/MPAutoFillRequestState.h"; sourceTree = SOURCE_ROOT; };
+		AF0000000000000000000051 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "MacPassAutoFill/MPAutoFillRequestState.m"; sourceTree = SOURCE_ROOT; };
+		AF0000000000000000000052 = {isa = PBXBuildFile; fileRef = AF0000000000000000000051; };
+		AF0000000000000000000053 = {isa = PBXBuildFile; fileRef = AF0000000000000000000051; };
+		AF0000000000000000000063 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MacPassAutoFill/MPAutoFillPickerView.h"; sourceTree = SOURCE_ROOT; };
+		AF0000000000000000000064 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "MacPassAutoFill/MPAutoFillPickerView.m"; sourceTree = SOURCE_ROOT; };
+		AF0000000000000000000065 = {isa = PBXBuildFile; fileRef = AF0000000000000000000064; };
+		AF0000000000000000000066 = {isa = PBXBuildFile; fileRef = AF0000000000000000000064; };
+		AF0000000000000000000040 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "MacPass/MPAutoFillCoordinator.m"; sourceTree = SOURCE_ROOT; };
+		AF0000000000000000000041 = {isa = PBXBuildFile; fileRef = AF0000000000000000000040; };
+		AF0000000000000000000047 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MacPass/MPAutoFillServer.h"; sourceTree = SOURCE_ROOT; };
+		AF0000000000000000000048 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "MacPass/MPAutoFillServer.m"; sourceTree = SOURCE_ROOT; };
+		AF0000000000000000000049 = {isa = PBXBuildFile; fileRef = AF0000000000000000000048; };
+		AF0000000000000000000042 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "AutoFillShared/MPAutoFillDomain.m"; sourceTree = SOURCE_ROOT; };
+		AF0000000000000000000043 = {isa = PBXBuildFile; fileRef = AF0000000000000000000042; };
+		AF0000000000000000000044 = {isa = PBXBuildFile; fileRef = AF0000000000000000000042; };
+		AF0000000000000000000045 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "MacPassTests/MPTestAutoFillCoordinator.m"; sourceTree = SOURCE_ROOT; };
+		AF0000000000000000000046 = {isa = PBXBuildFile; fileRef = AF0000000000000000000045; };
+		AF0000000000000000000031 = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AuthenticationServices.framework; path = System/Library/Frameworks/AuthenticationServices.framework; sourceTree = SDKROOT; };
+		AF0000000000000000000032 = {isa = PBXBuildFile; fileRef = AF0000000000000000000031; settings = {ATTRIBUTES = (Weak, ); }; };
+		AF0000000000000000000030 = {isa = PBXShellScriptBuildPhase; alwaysOutOfDate = 1; buildActionMask = 2147483647; files = (); inputPaths = ("$(TARGET_BUILD_DIR)/$(INFOPLIST_PATH)", ); name = Versioning; outputPaths = (); runOnlyForDeploymentPostprocessing = 0; shellPath = /bin/sh; shellScript = "/bin/sh \"${SRCROOT}/scripts/set-build-version.sh\""; showEnvVarsInLog = 0; };
+
+		AF0000000000000000000020 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "MacPassTests/MPTestAutoFillExtension.m"; sourceTree = SOURCE_ROOT; };
+		AF0000000000000000000021 = {isa = PBXBuildFile; fileRef = AF0000000000000000000020; };
+		AF0000000000000000000022 = {isa = PBXBuildFile; fileRef = AF0000000000000000000005; };
+		AF0000000000000000000001 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AutoFillShared/MPAutoFillTransport.h"; sourceTree = SOURCE_ROOT; };
+		AF0000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "AutoFillShared/MPAutoFillTransport.m"; sourceTree = SOURCE_ROOT; };
+		AF0000000000000000000005 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "MacPassAutoFill/CredentialProviderViewController.m"; sourceTree = SOURCE_ROOT; };
+		AF0000000000000000000006 = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MacPassAutoFill/Info.plist"; sourceTree = SOURCE_ROOT; };
+		AF0000000000000000000007 = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "MacPassAutoFill/MacPassAutoFill.entitlements"; sourceTree = SOURCE_ROOT; };
+		AF0000000000000000000008 = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; path = MacPassAutoFill.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		AF000000000000000000000A = {isa = PBXBuildFile; fileRef = AF0000000000000000000002; };
+		AF000000000000000000000C = {isa = PBXBuildFile; fileRef = AF0000000000000000000002; };
+		AF000000000000000000000D = {isa = PBXBuildFile; fileRef = AF0000000000000000000005; };
+		AF000000000000000000000E = {isa = PBXBuildFile; fileRef = AF0000000000000000000008; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		AF000000000000000000000F = {isa = PBXCopyFilesBuildPhase; buildActionMask = 2147483647; dstPath = ""; dstSubfolderSpec = 13; files = (AF000000000000000000000E, ); name = "Embed App Extensions"; runOnlyForDeploymentPostprocessing = 0; };
+		AF0000000000000000000010 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (AF0000000000000000000052, AF0000000000000000000065, AF000000000000000000000C, AF000000000000000000000D, AF0000000000000000000044, ); runOnlyForDeploymentPostprocessing = 0; };
+		AF0000000000000000000011 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		AF0000000000000000000012 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (AF0000000000000000000061, ); runOnlyForDeploymentPostprocessing = 0; };
+		AF0000000000000000000013 = {isa = PBXGroup; children = (AF0000000000000000000050, AF0000000000000000000051, AF0000000000000000000063, AF0000000000000000000064, AF0000000000000000000001, AF0000000000000000000002, AF0000000000000000000047, AF0000000000000000000048, AF0000000000000000000040, AF0000000000000000000042, AF0000000000000000000005, AF0000000000000000000006, AF0000000000000000000007, AF0000000000000000000060, ); name = AutoFill; sourceTree = "<group>"; };
+		AF0000000000000000000060 = {isa = PBXVariantGroup; children = (AF0000000000000000000062, ); name = Localizable.strings; path = MacPassAutoFill; sourceTree = SOURCE_ROOT; };
+		AF0000000000000000000061 = {isa = PBXBuildFile; fileRef = AF0000000000000000000060; };
+		AF0000000000000000000062 = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		AF0000000000000000000014 = {isa = PBXNativeTarget; buildConfigurationList = AF0000000000000000000017; buildPhases = (AF0000000000000000000010, AF0000000000000000000011, AF0000000000000000000012, AF0000000000000000000030, ); buildRules = (); dependencies = (); name = MacPassAutoFill; productName = MacPassAutoFill; productReference = AF0000000000000000000008; productType = "com.apple.product-type.app-extension"; };
+		AF0000000000000000000015 = {isa = XCBuildConfiguration; buildSettings = { APPLICATION_EXTENSION_API_ONLY = YES; CLANG_ENABLE_MODULES = YES; CLANG_ENABLE_OBJC_ARC = YES; CODE_SIGN_ENTITLEMENTS = MacPassAutoFill/MacPassAutoFill.entitlements; CODE_SIGN_IDENTITY = "Apple Development"; CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO; CODE_SIGN_STYLE = Automatic; DEVELOPMENT_TEAM = 55SM4L4Z97; ENABLE_HARDENED_RUNTIME = YES; GCC_PRECOMPILE_PREFIX_HEADER = NO; INFOPLIST_FILE = MacPassAutoFill/Info.plist; MACOSX_DEPLOYMENT_TARGET = 13.0; PRODUCT_BUNDLE_IDENTIFIER = "$(MACPASS_APP_BUNDLE_IDENTIFIER).AutoFill"; PRODUCT_NAME = "$(TARGET_NAME)"; SKIP_INSTALL = YES; }; name = Debug; };
+		AF0000000000000000000016 = {isa = XCBuildConfiguration; buildSettings = { APPLICATION_EXTENSION_API_ONLY = YES; CLANG_ENABLE_MODULES = YES; CLANG_ENABLE_OBJC_ARC = YES; CODE_SIGN_ENTITLEMENTS = MacPassAutoFill/MacPassAutoFill.entitlements; CODE_SIGN_IDENTITY = "Apple Development"; CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO; CODE_SIGN_STYLE = Automatic; DEVELOPMENT_TEAM = 55SM4L4Z97; ENABLE_HARDENED_RUNTIME = YES; GCC_PRECOMPILE_PREFIX_HEADER = NO; INFOPLIST_FILE = MacPassAutoFill/Info.plist; MACOSX_DEPLOYMENT_TARGET = 13.0; PRODUCT_BUNDLE_IDENTIFIER = "$(MACPASS_APP_BUNDLE_IDENTIFIER).AutoFill"; PRODUCT_NAME = "$(TARGET_NAME)"; SKIP_INSTALL = YES; }; name = Release; };
+		AF0000000000000000000017 = {isa = XCConfigurationList; buildConfigurations = (AF0000000000000000000015, AF0000000000000000000016, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		AF0000000000000000000018 = {isa = PBXContainerItemProxy; containerPortal = 4C77E35915B84A240093A587; proxyType = 1; remoteGlobalIDString = AF0000000000000000000014; remoteInfo = MacPassAutoFill; };
+		AF0000000000000000000019 = {isa = PBXTargetDependency; target = AF0000000000000000000014; targetProxy = AF0000000000000000000018; };
+
 /* Begin PBXBuildFile section */
 		3C0CDECF21CFEDD200B2A10B /* NSTextView+MPTouchBarExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C0CDECE21CFEDD200B2A10B /* NSTextView+MPTouchBarExtension.m */; };
 		3C0CDED821D28BF700B2A10B /* MPTouchBarButtonCreator.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C0CDED721D28BF700B2A10B /* MPTouchBarButtonCreator.m */; };
@@ -1238,6 +1289,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AF0000000000000000000032 /* AuthenticationServices.framework in Frameworks */,
 				4CCA8E9B18D91ED9001A6754 /* Quartz.framework in Frameworks */,
 				4C00E33B17D8FAC100F37192 /* Carbon.framework in Frameworks */,
 				4CAD748E15B88AC100104512 /* libz.dylib in Frameworks */,
@@ -1661,6 +1713,7 @@
 		4C77E35715B84A240093A587 = {
 			isa = PBXGroup;
 			children = (
+				AF0000000000000000000013 /* AutoFill */,
 				4CBC5DDB23C61C8300D14B92 /* TransformerKit.framework */,
 				4CC281881C0F675B00B9174D /* HNHUi.framework */,
 				4C7B63791C0CB55600D7038C /* KeePassKit.framework */,
@@ -1668,6 +1721,7 @@
 				4C7B637A1C0CB55600D7038C /* Sparkle.framework */,
 				4C00E33917D8FA3B00F37192 /* DDHotKey */,
 				4C77E36C15B84A240093A587 /* MacPass */,
+				AF0000000000000000000020 /* MPTestAutoFillExtension.m */,
 				4C45FB1E178E09ED0010007D /* MacPassTests */,
 				4C77E36515B84A240093A587 /* Frameworks */,
 				4C77E36315B84A240093A587 /* Products */,
@@ -1679,6 +1733,7 @@
 		4C77E36315B84A240093A587 /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				AF0000000000000000000008 /* MacPassAutoFill.appex */,
 				4C77E36215B84A240093A587 /* MacPass.app */,
 				4C45FB1A178E09ED0010007D /* MacPassTests.xctest */,
 			);
@@ -1688,6 +1743,7 @@
 		4C77E36515B84A240093A587 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AF0000000000000000000031 /* AuthenticationServices.framework */,
 				4CCA8E9A18D91ED9001A6754 /* Quartz.framework */,
 				4C473A8518AFD7250073FD2E /* XCTest.framework */,
 				4CAD748D15B88AC100104512 /* libz.dylib */,
@@ -2037,11 +2093,13 @@
 				4C77E35E15B84A240093A587 /* Sources */,
 				4C77E35F15B84A240093A587 /* Frameworks */,
 				4C77E36015B84A240093A587 /* Resources */,
+				AF000000000000000000000F /* Embed App Extensions */,
 				4C44DB1B1C08999F00774EB3 /* Versioning */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				AF0000000000000000000019 /* MacPassAutoFill */,
 			);
 			name = MacPass;
 			productName = MacPass;
@@ -2091,6 +2149,7 @@
 			targets = (
 				4C77E36115B84A240093A587 /* MacPass */,
 				4C45FB19178E09ED0010007D /* MacPassTests */,
+				AF0000000000000000000014 /* MacPassAutoFill */,
 			);
 		};
 /* End PBXProject section */
@@ -2260,7 +2319,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "git=`sh /etc/profile; which git`\nbranch_name=`$git rev-parse --abbrev-ref HEAD`\ngit_count=`$git rev-list $branch_name |wc -l | sed 's/^ *//;s/ *$//'`\n\nbuild_number=\"${git_count}0\"\nif [ $CONFIGURATION != \"Release\" ]; then\n  if [ $branch_name != \"master\" ] && [ $branch_name != release* ]; then\n    build_number+=\"-$branch_name\"\n  fi\nfi\nif [ \"$CI\" = \"true\" ]; then\nbuild_date=`date +\"%Y%m%d%H%m%S\"`\nbuild_number=\"$build_date-continuous\"\nfi\n\nplist=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\ndsym_plist=\"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist\"\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $build_number\" \"$plist\"\nif [ -f \"$DSYM_INFO_PLIST\" ] ; then\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $build_number\" \"$dsym_plist\"\nfi\n";
+			shellScript = "/bin/sh \"${SRCROOT}/scripts/set-build-version.sh\"";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -2270,6 +2329,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AF0000000000000000000021 /* MPTestAutoFillExtension.m in Sources */,
+				AF0000000000000000000046 /* MPTestAutoFillCoordinator.m in Sources */,
+				AF0000000000000000000022 /* CredentialProviderViewController.m in Sources */,
+				AF0000000000000000000053 /* MPAutoFillRequestState.m in Sources */,
+				AF0000000000000000000066 /* MPAutoFillPickerView.m in Sources */,
 				4C58A4A82192EEBE00B13370 /* MPTestIndexPathAdditions.m in Sources */,
 				4C45FB2D178E0BCB0010007D /* MPDatabaseLoading.m in Sources */,
 				4C8DEAA21C314D2C00D24C32 /* MPTestAutotypeDelay.m in Sources */,
@@ -2288,6 +2352,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AF000000000000000000000A /* MPAutoFillTransport.m in Sources */,
+				AF0000000000000000000049 /* MPAutoFillServer.m in Sources */,
+				AF0000000000000000000041 /* MPAutoFillCoordinator.m in Sources */,
+				AF0000000000000000000043 /* MPAutoFillDomain.m in Sources */,
 				4C1ECAE322CCD30F00F46069 /* MPAutotypeDoctor.m in Sources */,
 				4CD034AC1BFE113B003C002C /* MPPluginHost.m in Sources */,
 				4C77E37315B84A240093A587 /* main.m in Sources */,
@@ -3148,7 +3216,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MacPassTests/MacPassTests-Prefix.pch";
 				INFOPLIST_FILE = "MacPassTests/MacPassTests-Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.hicknhacksoftware.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(MACPASS_APP_BUNDLE_IDENTIFIER).Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				TEST_HOST = "$(BUNDLE_LOADER)";
@@ -3174,7 +3242,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MacPassTests/MacPassTests-Prefix.pch";
 				INFOPLIST_FILE = "MacPassTests/MacPassTests-Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.hicknhacksoftware.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(MACPASS_APP_BUNDLE_IDENTIFIER).Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				TEST_HOST = "$(BUNDLE_LOADER)";
@@ -3230,7 +3298,9 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "$(SDKROOT)/usr/include/libxml2/**";
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = "$(MACPASS_DEPLOYMENT_TARGET)";
+				MACPASS_DEPLOYMENT_TARGET = 10.13;
+				MACPASS_APP_BUNDLE_IDENTIFIER = com.hicknhacksoftware.MacPass;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-lxml2";
 				SDKROOT = macosx;
@@ -3280,7 +3350,9 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "$(SDKROOT)/usr/include/libxml2/**";
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = "$(MACPASS_DEPLOYMENT_TARGET)";
+				MACPASS_DEPLOYMENT_TARGET = 10.13;
+				MACPASS_APP_BUNDLE_IDENTIFIER = com.hicknhacksoftware.MacPass;
 				OTHER_LDFLAGS = "-lxml2";
 				SDKROOT = macosx;
 				WARNING_CFLAGS = "-Wpartial-availability";
@@ -3316,7 +3388,7 @@
 					"-lxml2",
 					"-Wl,-rpath,@loader_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.hicknhacksoftware.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(MACPASS_APP_BUNDLE_IDENTIFIER)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3355,7 +3427,7 @@
 					"-lxml2",
 					"-Wl,-rpath,@loader_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.hicknhacksoftware.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(MACPASS_APP_BUNDLE_IDENTIFIER)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";

@@ -25,6 +25,7 @@
 #import "MPConstants.h"
 #import "MPSettingsHelper.h"
 #import "MPAppDelegate.h"
+#import "MPAutoFillCoordinator.h"
 
 #import "HNHUi/HNHUi.h"
 
@@ -91,6 +92,7 @@
 - (void)addDocument:(NSDocument *)document {
   [((MPAppDelegate *)NSApp.delegate) hideWelcomeWindow];
   [super addDocument:document];
+  [NSNotificationCenter.defaultCenter postNotificationName:MPAutoFillDocumentsChangedNotification object:document];
 }
 
 - (void)removeDocument:(NSDocument *)document {
@@ -101,6 +103,7 @@
     }
   }
   [super removeDocument:document];
+  [NSNotificationCenter.defaultCenter postNotificationName:MPAutoFillDocumentsChangedNotification object:document];
 }
 
 - (BOOL)reopenLastDocument {

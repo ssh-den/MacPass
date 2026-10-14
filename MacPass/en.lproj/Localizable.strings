@@ -907,3 +907,6 @@
 "PASSWORD_INPUT_REMOVE_KEY_FILE" = "Remove key file";
 
 "GLOBAL_AUTOTYPE_SOUND_ON_NO_MATCH" = "Play sound when Global Autotype finds no match";
+
+"AUTOFILL_UNLOCK_MESSAGE" = "Unlock this database, then select the suggestion again.";
+"AUTOFILL_UNSUPPORTED_PLACEHOLDER" = "This entry contains an unsupported placeholder or an unsafe/unresolved reference.";

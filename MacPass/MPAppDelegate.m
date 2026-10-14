@@ -21,6 +21,7 @@
 //
 
 #import "MPAppDelegate.h"
+#import "MPAutoFillCoordinator.h"
 
 #import "MPAutotypeDaemon.h"
 #import "MPConstants.h"
@@ -69,6 +70,7 @@ typedef NS_OPTIONS(NSInteger, MPAppStartupState) {
 
 @property (strong) NSWindow *welcomeWindow;
 @property (strong) SPUUpdater *updater;
+@property (strong) MPAutoFillCoordinator *autoFillCoordinator API_AVAILABLE(macos(13.0));
 @property (strong) IBOutlet NSWindow *passwordCreatorWindow;
 @property (strong, nonatomic) MPPreferencesWindowController *preferencesController;
 @property (strong, nonatomic) MPPasswordCreatorViewController *passwordCreatorController;
@@ -194,6 +196,27 @@ typedef NS_OPTIONS(NSInteger, MPAppStartupState) {
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {
   _isTerminating = YES;
   [self hideWelcomeWindow];
+  if(@available(macOS 13.0, *)) {
+    // Only a listening coordinator can own published identities to clear.
+    MPAutoFillCoordinator *coordinator = self.autoFillCoordinator;
+    if(coordinator.isListening) {
+      __block BOOL replied = NO;
+      void (^finish)(void) = ^{
+        if(replied) return;
+        replied = YES;
+        [MPTemporaryFileStorageCenter.defaultCenter cleanupStorages];
+        [sender replyToApplicationShouldTerminate:YES];
+      };
+      // Keep the run loop alive for identity-store completion. Never start new
+      // store work in applicationWillTerminate, when XPC is already tearing down.
+      // Asynchronous, because the reply must follow the NSTerminateLater return.
+      dispatch_async(dispatch_get_main_queue(), ^{ [coordinator prepareForTerminationWithCompletion:finish]; });
+      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        if(!replied) { NSLog(@"AutoFill shutdown cleanup timed out"); finish(); }
+      });
+      return NSTerminateLater;
+    }
+  }
   if(MPTemporaryFileStorageCenter.defaultCenter.hasPendingStorages) {
     dispatch_async(dispatch_get_main_queue(), ^{
       [MPTemporaryFileStorageCenter.defaultCenter cleanupStorages];
@@ -213,7 +236,41 @@ typedef NS_OPTIONS(NSInteger, MPAppStartupState) {
   return YES;
 }
 
+- (BOOL)isAutoFillActivationURL:(NSURL *)url {
+  NSString *scheme = [NSBundle.mainBundle.bundleIdentifier.lowercaseString stringByAppendingString:@".autofill"];
+  return [url.scheme.lowercaseString isEqual:scheme] && [url.host isEqual:@"open"] &&
+    url.path.length == 0 && !url.query && !url.fragment && !url.user && !url.password && !url.port;
+}
+
+- (void)application:(NSApplication *)application openURLs:(NSArray<NSURL *> *)urls {
+  for(NSURL *url in urls) {
+    if(url.isFileURL) [self application:application openFile:url.path];
+    // A cold launch through the AutoFill URL keeps the regular startup
+    // (restoration, reopening the last database); only a running app is revealed.
+    else if([self isAutoFillActivationURL:url] && self.startupState == (MPAppStartupStateRestoredWindows | MPAppStartupStateFinishedLaunch)) {
+      [self revealAutoFillApplication];
+    }
+  }
+}
+
+// Any app or web page can open the activation URL, so it only brings MacPass
+// forward: it never names files, opens databases or returns data.
+// Only the AutoFill database's window is raised: showing another document's
+// window could make it main and so switch the database AutoFill serves.
+- (void)revealAutoFillApplication {
+  MPDocument *document = nil;
+  if(@available(macOS 13.0, *)) document = self.autoFillCoordinator.documentToReveal;
+  if(document) [document showWindows];
+  else if(NSDocumentController.sharedDocumentController.documents.count == 0) [self showWelcomeWindow];
+  if(@available(macOS 14.0, *)) [NSApp activate];
+  else [NSApp activateIgnoringOtherApps:YES];
+}
+
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
+  // Unit tests use fake stores and must not change the user's system catalog.
+  if(@available(macOS 13.0, *)) {
+    if(!NSApp.isRunningTests) self.autoFillCoordinator = [MPAutoFillCoordinator start];
+  }
 #if defined(NO_SPARKLE)
   NSLog(@"Sparkle explicitly disabled!!!");
 #endif

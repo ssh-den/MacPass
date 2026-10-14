@@ -58,10 +58,9 @@ those permissions after a rebuild. List available identities with
 ```xcconfig
 CODE_SIGN_IDENTITY = YOUR_CERTIFICATE_SHA1
 DEVELOPMENT_TEAM = YOUR_TEAM_ID
-CODE_SIGN_STYLE = Manual
-CODE_SIGN_ENTITLEMENTS =
-ENABLE_HARDENED_RUNTIME = NO
-MACOSX_DEPLOYMENT_TARGET = 12.0
+MACPASS_APP_BUNDLE_IDENTIFIER = com.yourname.MacPass
+CODE_SIGN_STYLE = Automatic
+MACPASS_DEPLOYMENT_TARGET = 12.0
 ```
 
 These settings are for local Debug builds. Run `./scripts/build-local.sh` to build
@@ -69,6 +68,12 @@ These settings are for local Debug builds. Run `./scripts/build-local.sh` to bui
 tests with the same signing settings. Keep using that app path and signing identity.
 Switching from an ad hoc build may require granting permissions once more; subsequent
 builds should retain them. The signing configuration is local and is not committed.
+
+The app and the embedded AutoFill extension both derive their identifiers and
+entitlements from this file, so do not override `PRODUCT_BUNDLE_IDENTIFIER`,
+`MACOSX_DEPLOYMENT_TARGET`, `CODE_SIGN_ENTITLEMENTS` or `ENABLE_HARDENED_RUNTIME`
+in it. MacPass refuses an AutoFill extension without hardened runtime or with
+`get-task-allow`; with a debugger attached to the extension, AutoFill reports it as rejected.
 
 ## Help
 
