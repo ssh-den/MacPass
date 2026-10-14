@@ -9,6 +9,8 @@
         <customObject id="-2" userLabel="File's Owner" customClass="MPIntegrationPreferencesController">
             <connections>
                 <outlet property="alwaysShowConfirmationBeforeAutotypeCheckBox" destination="uZQ-Gd-hfu" id="6NL-Tz-7su"/>
+                <outlet property="autoFillBox" destination="aFl-bx-Box" id="aFl-ou-Box"/>
+                <outlet property="enableAutoFillCheckBox" destination="aFl-cb-Btn" id="aFl-ou-Btn"/>
                 <outlet property="autotypeStackView" destination="j52-9L-k7c" id="Mxw-aa-elx"/>
                 <outlet property="autotypeWarningTextField" destination="hMJ-Mo-xOM" id="LcH-X2-TAm"/>
                 <outlet property="enableGlobalAutotypeCheckBox" destination="tik-Ar-FJg" id="yVA-bM-sSh"/>
@@ -31,8 +33,43 @@
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customView translatesAutoresizingMaskIntoConstraints="NO" id="1">
-            <rect key="frame" x="0.0" y="0.0" width="425" height="736"/>
+            <rect key="frame" x="0.0" y="0.0" width="425" height="841"/>
             <subviews>
+                <box autoresizesSubviews="NO" verticalHuggingPriority="500" borderType="line" title="Password AutoFill" translatesAutoresizingMaskIntoConstraints="NO" id="aFl-bx-Box">
+                    <rect key="frame" x="17" y="724" width="391" height="97"/>
+                    <view key="contentView" id="aFl-cv-Vew">
+                        <rect key="frame" x="4" y="5" width="383" height="77"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="aFl-cb-Btn">
+                                <rect key="frame" x="13" y="50" width="300" height="18"/>
+                                <buttonCell key="cell" type="check" title="Enable Password AutoFill for the active database" bezelStyle="regularSquare" imagePosition="left" inset="2" id="aFl-cb-Cel">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
+                            <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="aFl-tx-Fld">
+                                <rect key="frame" x="13" y="15" width="357" height="28"/>
+                                <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="Only the most recently used unlocked database is offered to Safari and other apps. Also enable MacPass in System Settings → AutoFill &amp; Passwords. Filling requires Touch ID or your macOS password." id="aFl-tx-Cel">
+                                    <font key="font" metaFont="smallSystem"/>
+                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="aFl-cb-Btn" secondAttribute="trailing" constant="20" symbolic="YES" id="aFl-c1-Trl"/>
+                        </constraints>
+                    </view>
+                    <constraints>
+                        <constraint firstItem="aFl-tx-Fld" firstAttribute="leading" secondItem="aFl-bx-Box" secondAttribute="leading" constant="16" id="aFl-c2-Led"/>
+                        <constraint firstItem="aFl-tx-Fld" firstAttribute="top" secondItem="aFl-cb-Btn" secondAttribute="bottom" constant="8" id="aFl-c3-Top"/>
+                        <constraint firstAttribute="bottom" secondItem="aFl-tx-Fld" secondAttribute="bottom" constant="16" id="aFl-c4-Bot"/>
+                        <constraint firstItem="aFl-cb-Btn" firstAttribute="top" secondItem="aFl-bx-Box" secondAttribute="top" constant="25" id="aFl-c5-Top"/>
+                        <constraint firstItem="aFl-cb-Btn" firstAttribute="leading" secondItem="aFl-bx-Box" secondAttribute="leading" constant="16" id="aFl-c6-Led"/>
+                        <constraint firstAttribute="trailing" secondItem="aFl-tx-Fld" secondAttribute="trailing" constant="16" id="aFl-c7-Trl"/>
+                    </constraints>
+                </box>
                 <box autoresizesSubviews="NO" verticalHuggingPriority="500" borderType="line" title="Autotype" translatesAutoresizingMaskIntoConstraints="NO" id="P9N-HM-wER">
                     <rect key="frame" x="17" y="294" width="391" height="422"/>
                     <view key="contentView" id="faU-Ok-HJ3">
@@ -349,7 +386,11 @@
             <constraints>
                 <constraint firstItem="ChZ-ku-FOP" firstAttribute="trailing" secondItem="ww4-uR-8gP" secondAttribute="trailing" id="39G-i3-XQa"/>
                 <constraint firstItem="ChZ-ku-FOP" firstAttribute="top" secondItem="VVs-b5-cX9" secondAttribute="bottom" constant="8" symbolic="YES" id="3ub-U2-KCr"/>
-                <constraint firstItem="P9N-HM-wER" firstAttribute="top" secondItem="1" secondAttribute="top" constant="20" symbolic="YES" id="8fy-q5-VJy"/>
+                <constraint firstItem="aFl-bx-Box" firstAttribute="top" secondItem="1" secondAttribute="top" constant="20" symbolic="YES" id="aFl-c8-Top"/>
+                <constraint firstItem="aFl-bx-Box" firstAttribute="leading" secondItem="P9N-HM-wER" secondAttribute="leading" id="aFl-c9-Led"/>
+                <constraint firstItem="aFl-bx-Box" firstAttribute="trailing" secondItem="P9N-HM-wER" secondAttribute="trailing" id="aFl-cA-Trl"/>
+                <constraint firstItem="P9N-HM-wER" firstAttribute="top" secondItem="aFl-bx-Box" secondAttribute="bottom" constant="8" symbolic="YES" id="aFl-cB-Top"/>
+                <constraint firstItem="P9N-HM-wER" firstAttribute="top" secondItem="1" secondAttribute="top" priority="250" constant="20" symbolic="YES" id="8fy-q5-VJy"/>
                 <constraint firstItem="ChZ-ku-FOP" firstAttribute="leading" secondItem="ww4-uR-8gP" secondAttribute="leading" id="BQW-Zd-udd"/>
                 <constraint firstAttribute="bottom" secondItem="ChZ-ku-FOP" secondAttribute="bottom" constant="20" symbolic="YES" id="DBk-vZ-yOT"/>
                 <constraint firstItem="VVs-b5-cX9" firstAttribute="top" secondItem="P9N-HM-wER" secondAttribute="bottom" constant="8" symbolic="YES" id="VCX-JW-cBe"/>

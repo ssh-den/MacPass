@@ -45,6 +45,10 @@
 /* Preview */
 @property (strong) IBOutlet NSButton *enableQuicklookCheckBox;
 
+/* Password AutoFill (macOS 13+) */
+@property (strong) IBOutlet NSBox *autoFillBox;
+@property (strong) IBOutlet NSButton *enableAutoFillCheckBox;
+
 /* Touch ID Shortcut */
 @property (strong) IBOutlet NSButton *enableTouchIdShortcutCheckBox;
 @property (strong) IBOutlet DDHotKeyTextField *touchIdHotKeyTextField;

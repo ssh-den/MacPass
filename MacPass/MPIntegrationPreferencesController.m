@@ -25,6 +25,7 @@
 #import "MPIconHelper.h"
 #import "MPAutotypeDoctor.h"
 #import "MPConstants.h"
+#import "MPAutoFillCoordinator.h"
 
 #import "DDHotKeyCenter.h"
 #import "DDHotKey+MacPassAdditions.h"
@@ -89,6 +90,13 @@
   [self _showKeyCodeMissingKeyWarning:NO];
   [self _showTouchIdKeyCodeMissingKeyWarning:NO];
   [self _updateAccessabilityWarning];
+  if(@available(macOS 13.0, *)) {
+    [self.enableAutoFillCheckBox bind:NSValueBinding toObject:defaultsController withKeyPath:[MPSettingsHelper defaultControllerPathForKey:MPAutoFillEnabledPreference] options:nil];
+  }
+  else {
+    // A lower-priority constraint in the nib then pins the Autotype box to the top.
+    [self.autoFillBox removeFromSuperview];
+  }
 }
 
 - (void)willShowTab {
