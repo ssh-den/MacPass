@@ -60,7 +60,6 @@ CODE_SIGN_IDENTITY = YOUR_CERTIFICATE_SHA1
 DEVELOPMENT_TEAM = YOUR_TEAM_ID
 MACPASS_APP_BUNDLE_IDENTIFIER = com.yourname.MacPass
 CODE_SIGN_STYLE = Automatic
-MACPASS_DEPLOYMENT_TARGET = 12.0
 ```
 
 These settings are for local Debug builds. Run `./scripts/build-local.sh` to build
