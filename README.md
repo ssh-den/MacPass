@@ -68,6 +68,12 @@ tests with the same signing settings. Keep using that app path and signing ident
 Switching from an ad hoc build may require granting permissions once more; subsequent
 builds should retain them. The signing configuration is local and is not committed.
 
+Apple Development provisioning profiles and certificates expire after about a year.
+Then new builds fail to sign, and an existing build with the AutoFill extension may
+no longer launch. Open the project in Xcode once so automatic signing renews the
+profiles, update `CODE_SIGN_IDENTITY` if the certificate was renewed, and rebuild.
+A new certificate may require granting the permissions above once more.
+
 The app and the embedded AutoFill extension both derive their identifiers and
 entitlements from this file, so do not override `PRODUCT_BUNDLE_IDENTIFIER`,
 `MACOSX_DEPLOYMENT_TARGET`, `CODE_SIGN_ENTITLEMENTS` or `ENABLE_HARDENED_RUNTIME`
