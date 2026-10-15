@@ -66,6 +66,8 @@
 
 - (IBAction)duplicateEntryWithOptions:(id)sender;
 - (IBAction)pickExpiryDate:(id)sender;
+- (IBAction)showOTPSetup:(id)sender;
+- (IBAction)removeOTP:(id)sender;
 - (IBAction)performAutotypeForEntry:(id)sender;
 
 - (IBAction)showGroupInOutline:(id)sender;

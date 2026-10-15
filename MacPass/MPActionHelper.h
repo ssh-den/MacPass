@@ -50,7 +50,9 @@ typedef NS_ENUM(NSUInteger, MPActionType) {
   MPActionHideEntryHistory, // exit history
   MPActionShowGroupInOutline, // show the group (of the entry) in the outline view
   MPActionPerformAutotypeForSelectedEntry, // Perform Autotype for selected Entry
-  MPActionRemoveAttachment // Remove an attachment
+  MPActionRemoveAttachment, // Remove an attachment
+  MPActionSetupTimeOTP, // Set up or edit the verification code (TOTP) of the selected entry
+  MPActionRemoveTimeOTP // Remove the verification code (TOTP) of the selected entry
 };
 /**
  *	Helper to retrieve commonly used actions

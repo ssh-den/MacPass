@@ -7,10 +7,13 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "MPViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MPTOTPSetupViewController : NSViewController <NSTextFieldDelegate>
+/// Sets up the verification code (TOTP) of the represented entry. Saving
+/// notifies the observer, so the entry's history and undo are recorded.
+@interface MPTOTPSetupViewController : MPViewController <NSTextFieldDelegate>
 
 @end
 

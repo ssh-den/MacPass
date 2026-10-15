@@ -33,6 +33,7 @@
 - (IBAction)pickIcon:(id)sender;
 - (IBAction)pickExpiryDate:(id)sender;
 - (IBAction)showPluginData:(id)sender;
+- (IBAction)showOTPSetup:(id)sender;
 
 /* Separate call to ensure all registered objects are in place */
 - (void)registerNotificationsForDocument:(NSDocument *)document;

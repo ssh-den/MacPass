@@ -172,6 +172,10 @@ typedef NS_ENUM(NSUInteger, MPContentTab) {
   [self _popupViewController:[[MPPluginDataViewController alloc] init] atView:sender];
 }
 
+- (IBAction)showOTPSetup:(id)sender {
+  [self.entryViewController showOTPSetup:sender];
+}
+
 - (void)_popupViewController:(MPViewController *)vc atView:(NSView *)view {
   vc.representedObject = self.representedObject;
   vc.observer = self.windowController.document;

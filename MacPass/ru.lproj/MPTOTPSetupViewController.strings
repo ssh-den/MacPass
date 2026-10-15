@@ -1,0 +1,27 @@
+
+/* Class = "NSTextFieldCell"; title = "URL"; ObjectID = "Kci-xp-mLu"; */
+"Kci-xp-mLu.title" = "Ссылка";
+
+/* Class = "NSTextFieldCell"; title = "QR Code"; ObjectID = "PuA-kW-t29"; */
+"PuA-kW-t29.title" = "QR-код";
+
+/* Class = "NSButtonCell"; title = "Save"; ObjectID = "YGn-qt-RrI"; */
+"YGn-qt-RrI.title" = "Сохранить";
+
+/* Class = "NSButtonCell"; title = "Cancel"; ObjectID = "Ynh-bE-30s"; */
+"Ynh-bE-30s.title" = "Отмена";
+
+/* Class = "NSTextFieldCell"; title = "Type"; ObjectID = "fNC-fH-sYi"; */
+"fNC-fH-sYi.title" = "Тип";
+
+/* Class = "NSTextFieldCell"; title = "Hash Algorithm"; ObjectID = "g3s-fk-k9Q"; */
+"g3s-fk-k9Q.title" = "Алгоритм";
+
+/* Class = "NSTextFieldCell"; title = "Time step"; ObjectID = "hbT-mm-dIn"; */
+"hbT-mm-dIn.title" = "Интервал, с";
+
+/* Class = "NSTextFieldCell"; title = "Number of Digits"; ObjectID = "iYF-F5-nMb"; */
+"iYF-F5-nMb.title" = "Цифр в коде";
+
+/* Class = "NSTextFieldCell"; title = "Setup Key"; ObjectID = "ufY-IN-5UY"; */
+"ufY-IN-5UY.title" = "Ключ настройки";

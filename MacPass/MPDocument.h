@@ -165,6 +165,8 @@ FOUNDATION_EXPORT NSString *const MPDocumentGroupKey;
 
 - (void)deleteNode:(KPKNode *)node;
 - (void)duplicateEntryWithOptions:(KPKCopyOptions)options;
+/* Undoable; keeps HMAC-OTP settings */
+- (void)removeTimeOTPFromEntry:(KPKEntry *)entry;
 
 #pragma mark Actions
 /**

@@ -12,6 +12,7 @@
                 <outlet property="digitCountPopUpButton" destination="aa3-XV-Chc" id="Ghc-Mp-R8f"/>
                 <outlet property="gridView" destination="4gl-4p-0WY" id="hvW-TB-Elg"/>
                 <outlet property="qrCodeImageView" destination="yS5-M0-RSB" id="s9E-ID-WQz"/>
+                <outlet property="saveButton" destination="Ppm-aD-yti" id="Mp7-Sv-B1t"/>
                 <outlet property="secretTextField" destination="Bt8-9X-91R" id="mtn-nj-3oO"/>
                 <outlet property="timeStepStepper" destination="CgJ-Qt-NPu" id="JxC-E8-BXY"/>
                 <outlet property="timeStepTextField" destination="AdN-zI-C65" id="ebN-x3-AIN"/>
@@ -76,7 +77,7 @@
                         <gridCell row="leK-j9-Cah" column="Ar1-qh-iHT" rowAlignment="none" id="fgi-y3-z17">
                             <textField key="contentView" horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="e3u-QK-K24">
                                 <rect key="frame" x="61" y="148" width="44" height="21"/>
-                                <textFieldCell key="cell" lineBreakMode="clipping" title="Secret" id="ufY-IN-5UY">
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="Setup Key" id="ufY-IN-5UY">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -98,7 +99,7 @@
                         </gridCell>
                         <gridCell row="leK-j9-Cah" column="aZO-dP-SsW" id="gOO-ed-C7I"/>
                         <gridCell row="J7I-Uw-OQv" column="Ar1-qh-iHT" id="LYj-ea-Ou9">
-                            <textField key="contentView" hidden="YES" horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="W8L-ah-Kdc">
+                            <textField key="contentView" horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="W8L-ah-Kdc">
                                 <rect key="frame" x="71" y="121" width="34" height="16"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Type" id="fNC-fH-sYi">
                                     <font key="font" usesAppearanceFont="YES"/>
@@ -108,7 +109,7 @@
                             </textField>
                         </gridCell>
                         <gridCell row="J7I-Uw-OQv" column="Ecc-pj-MX9" id="fOz-RA-6LG">
-                            <popUpButton key="contentView" hidden="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ku7-YD-kkV">
+                            <popUpButton key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ku7-YD-kkV">
                                 <rect key="frame" x="106" y="114" width="157" height="25"/>
                                 <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="WbA-Ie-Txj">
                                     <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -211,9 +212,12 @@
                 </gridView>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ppm-aD-yti">
                     <rect key="frame" x="193" y="13" width="118" height="32"/>
-                    <buttonCell key="cell" type="push" title="Save Settings" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="YGn-qt-RrI">
+                    <buttonCell key="cell" type="push" title="Save" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="YGn-qt-RrI">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
+                        <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
                     </buttonCell>
                     <connections>
                         <action selector="save:" target="-2" id="k3D-gK-Tch"/>

@@ -31,8 +31,9 @@ typedef NS_OPTIONS(NSUInteger, MPContextMenuItemsFlags) {
   MPContextMenuAutotype           = 1 << 5,
   MPContextMenuHistory            = 1 << 6,
   MPContextMenuShowGroupInOutline = 1 << 7,
+  MPContextMenuTimeOTP            = 1 << 8,
   MPContextMenuMinimal            = MPContextMenuCreate | MPContextMenuDelete | MPContextMenuDuplicate,
-  MPContextMenuFull               = MPContextMenuMinimal | MPContextMenuCopy | MPContextMenuDuplicate | MPContextMenuAutotype | MPContextMenuHistory,
+  MPContextMenuFull               = MPContextMenuMinimal | MPContextMenuCopy | MPContextMenuDuplicate | MPContextMenuAutotype | MPContextMenuHistory | MPContextMenuTimeOTP,
   MPContextMenuExtended           = MPContextMenuFull | MPContextMenuTrash
 };
 

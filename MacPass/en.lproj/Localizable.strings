@@ -737,9 +737,6 @@
 /* Checkbox in dialog to set the selection as default file change strategy! */
 "SET_AS_DEFAULT_FILE_CHANGE_STRATEGY" = "Use this method as default. You can change this at any time in the preferences.";
 
-/* Menu item title editing TOTP settings */
-"SETUP_TOTP_SETTINGS" = "Edit Time-One-Time-Password settings.";
-
 /* Action button in Notification to show the Autotype Doctor */
 "SHOW_AUTOTYPE_DOCTOR" = "Show Autotype Doctor";
 
@@ -910,3 +907,16 @@
 
 "AUTOFILL_UNLOCK_MESSAGE" = "Unlock this database, then select the suggestion again.";
 "AUTOFILL_UNSUPPORTED_PLACEHOLDER" = "This entry contains an unsupported placeholder or an unsafe/unresolved reference.";
+
+/* Verification codes (TOTP) */
+"SETUP_TOTP" = "Set Up Verification Code…";
+"EDIT_TOTP" = "Edit Verification Code…";
+"REMOVE_TOTP" = "Remove Verification Code";
+"SETUP_TOTP_ACTION" = "Change Verification Code";
+"REMOVE_TOTP_ALERT_TITLE_%@" = "Remove the verification code from “%@”?";
+"REMOVE_TOTP_ALERT_DESCRIPTION" = "MacPass will no longer show codes for this entry. You can undo this with Edit › Undo.";
+"REMOVE_TOTP_ALERT_BUTTON_REMOVE" = "Remove";
+"TOTP_SETUP_HINT" = "Paste the setup key or the otpauth:// link from the website, or drop its QR code image above.";
+"TOTP_SETUP_INVALID_SECRET" = "This is not a valid setup key. It uses the letters A–Z and the digits 2–7; spaces do not matter.";
+"TOTP_SETUP_INVALID_URL" = "This is not an otpauth:// link for verification codes.";
+"TOTP_SETUP_INVALID_QR_CODE" = "This image contains no QR code for verification codes.";

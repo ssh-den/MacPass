@@ -8,7 +8,11 @@
 
 #import "MPTOTPSetupViewController.h"
 #import "NSImage+MPQRCode.h"
+#import "KPKEntry+MPTimeOTP.h"
 #import <KeePassKit/KeePassKit.h>
+
+/* the message row sits below the secret */
+static const NSInteger MPOTPMessageRowIndex = 2;
 
 @interface MPTOTPSetupViewController ()
 @property (strong) IBOutlet NSTextField *urlTextField;
@@ -20,9 +24,13 @@
 @property (strong) IBOutlet NSImageView *qrCodeImageView;
 @property (strong) IBOutlet NSGridView *gridView;
 @property (strong) IBOutlet NSPopUpButton *typePopUpButton;
+@property (strong) IBOutlet NSButton *saveButton;
+@property (strong) NSTextField *messageTextField;
 
 @property (nonatomic, readonly) KPKEntry *representedEntry;
 @property (copy) KPKTimeOTPGenerator *generator;
+/* the last input could not be used; it stays visible for correction */
+@property BOOL hasInvalidInput;
 
 @end
 
@@ -89,11 +97,22 @@ typedef NS_ENUM(NSUInteger, MPOTPType) {
 }
 
 - (IBAction)save:(id)sender {
-  // Update entry settings!
-  // FIXME: add model observing to ensure correct history recording
+  /* commit a pending edit first, it may still turn out to be invalid */
   [self.view.window makeFirstResponder:nil];
-  [self.generator saveToEntry:self.representedEntry];
+  if(!self.canSave || !self.representedEntry) {
+    NSBeep();
+    return;
+  }
+  KPKEntry *entry = self.representedEntry;
+  [self.observer willChangeModelProperty];
+  [entry saveTimeOTPGenerator:self.generator];
+  [entry.undoManager setActionName:NSLocalizedStringWithDefaultValue(@"SETUP_TOTP_ACTION", nil, NSBundle.mainBundle, @"Change Verification Code", @"Undo action name for setting up or changing the verification code (TOTP) of an entry")];
+  [self.observer didChangeModelProperty];
   [self.presentingViewController dismissViewController:self];
+}
+
+- (BOOL)canSave {
+  return !self.hasInvalidInput && self.generator.key.length > 0;
 }
 
 - (void)controlTextDidEndEditing:(NSNotification *)notification {
@@ -154,8 +173,10 @@ typedef NS_ENUM(NSUInteger, MPOTPType) {
   self.typePopUpButton.target = self;
   
   self.timeStepTextField.stringValue = @"";
-  self.timeStepStepper.integerValue = 0;
-  
+  /* a time step of 0 has no valid codes */
+  self.timeStepStepper.minValue = 1;
+  self.timeStepStepper.integerValue = KPKTimeOTPDefaultTimeSlice;
+
   self.timeStepStepper.action = @selector(changeTimeSlice:);
   /*[self.timeStepTextField bind:NSValueBinding
                       toObject:self
@@ -168,7 +189,26 @@ typedef NS_ENUM(NSUInteger, MPOTPType) {
   
   self.secretTextField.delegate = self;
   self.urlTextField.delegate = self;
-  
+
+  /* hints and input errors */
+  self.messageTextField = [NSTextField wrappingLabelWithString:@""];
+  self.messageTextField.font = [NSFont systemFontOfSize:NSFont.smallSystemFontSize];
+  self.messageTextField.preferredMaxLayoutWidth = 180;
+  [self.gridView insertRowAtIndex:MPOTPMessageRowIndex withViews:@[NSGridCell.emptyContentView, self.messageTextField, NSGridCell.emptyContentView]];
+  [self.gridView mergeCellsInHorizontalRange:NSMakeRange(1, 2) verticalRange:NSMakeRange(MPOTPMessageRowIndex, 1)];
+}
+
+- (void)_showMessage:(NSString *)message isError:(BOOL)isError {
+  self.messageTextField.stringValue = message ?: @"";
+  self.messageTextField.textColor = isError ? NSColor.systemRedColor : NSColor.secondaryLabelColor;
+  [self.gridView rowAtIndex:MPOTPMessageRowIndex].hidden = (message.length == 0);
+}
+
+/* keeps the rejected input in its field so it can be corrected */
+- (void)_rejectInputWithMessage:(NSString *)message {
+  self.hasInvalidInput = YES;
+  [self _showMessage:message isError:YES];
+  self.saveButton.enabled = NO;
 }
 
 - (void)_updateView:(MPOTPUpdateSource)source {
@@ -205,21 +245,21 @@ typedef NS_ENUM(NSUInteger, MPOTPType) {
       break;
     case MPOTPUpdateSourceQRImage: {
       NSString *qrCodeString = self.qrCodeImageView.image.QRCodeString;
-      NSURL *otpURL = [NSURL URLWithString:qrCodeString];
-      self.generator = otpURL.isSteamOTPURL ? [[KPKSteamOTPGenerator alloc] initWithURL:qrCodeString] : [[KPKTimeOTPGenerator alloc] initWithURL:qrCodeString];
+      KPKTimeOTPGenerator *generator = [self _generatorWithURLString:qrCodeString];
+      if(!generator) {
+        [self _rejectInputWithMessage:NSLocalizedStringWithDefaultValue(@"TOTP_SETUP_INVALID_QR_CODE", nil, NSBundle.mainBundle, @"This image contains no QR code for verification codes.", @"Shown when a dropped or pasted image holds no otpauth QR code")];
+        return;
+      }
+      self.generator = generator;
       break;
     }
     case MPOTPUpdateSourceURL:{
-      NSURL *otpURL = [NSURL URLWithString:self.urlTextField.stringValue];
-      if(otpURL.isSteamOTPURL) {
-        self.generator = [[KPKSteamOTPGenerator alloc] initWithURL:self.urlTextField.stringValue];
+      KPKTimeOTPGenerator *generator = [self _generatorWithURLString:self.urlTextField.stringValue];
+      if(!generator) {
+        [self _rejectInputWithMessage:NSLocalizedStringWithDefaultValue(@"TOTP_SETUP_INVALID_URL", nil, NSBundle.mainBundle, @"This is not an otpauth:// link for verification codes.", @"Shown when the entered setup URL is not a TOTP otpauth URL")];
+        return;
       }
-      else if(otpURL.isTimeOTPURL) {
-        self.generator = [[KPKTimeOTPGenerator alloc] initWithURL:self.urlTextField.stringValue];
-      }
-      else {
-        // invalid URL
-      }
+      self.generator = generator;
       break;
     }
       
@@ -236,9 +276,16 @@ typedef NS_ENUM(NSUInteger, MPOTPType) {
         self.generator = [[KPKTimeOTPGenerator alloc] init];
       }
       break;
-    case MPOTPUpdateSourceSecret:
-      self.generator.key = [NSData dataWithBase32EncodedString:self.secretTextField.stringValue];
+    case MPOTPUpdateSourceSecret: {
+      NSString *setupKey = self.secretTextField.stringValue;
+      NSData *key = [KPKEntry timeOTPKeyFromSetupKey:setupKey];
+      if(!key && [setupKey stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet].length > 0) {
+        [self _rejectInputWithMessage:NSLocalizedStringWithDefaultValue(@"TOTP_SETUP_INVALID_SECRET", nil, NSBundle.mainBundle, @"This is not a valid setup key. It uses the letters A–Z and the digits 2–7; spaces do not matter.", @"Shown when the entered TOTP setup key is not Base32")];
+        return;
+      }
+      self.generator.key = key ?: NSData.data;
       break;
+    }
     case MPOTPUpdateSourceAlgorithm:
       self.generator.hashAlgorithm = (KPKOTPHashAlgorithm)self.algorithmPopUpButton.selectedTag;
       break;
@@ -257,10 +304,10 @@ typedef NS_ENUM(NSUInteger, MPOTPType) {
    */
   
   if(!self.generator) {
-    // display issues!
-    return;
+    self.generator = [[KPKTimeOTPGenerator alloc] init];
   }
-  
+  self.hasInvalidInput = NO;
+
   /* update display data with current generator */
   BOOL isSteam = [self.generator isKindOfClass:KPKSteamOTPGenerator.class];
   
@@ -284,32 +331,46 @@ typedef NS_ENUM(NSUInteger, MPOTPType) {
     self.timeStepTextField.enabled = YES;
   }
   
+  BOOL hasKey = self.generator.key.length > 0;
   NSURL *authURL;
-  if(isSteam) {
+  if(hasKey && isSteam) {
     authURL = [NSURL URLWIthSteamOTPKey:self.generator.key issuer:self.representedEntry.title];
   }
-  else {
+  else if(hasKey) {
     authURL = [NSURL URLWithTimeOTPKey:self.generator.key
                              algorithm:self.generator.hashAlgorithm
                                 issuer:self.representedEntry.title
                                 period:self.generator.timeSlice
                                 digits:self.generator.numberOfDigits];
   }
-   
-  if(!(authURL && authURL.isTimeOTPURL)) {
-    // display issue!
-    return;
-  }
-  
-  self.urlTextField.stringValue = authURL.absoluteString;
-  self.qrCodeImageView.image = [NSImage QRCodeImageWithString:authURL.absoluteString];
-  
-  NSString *secret = [self.generator.key base32EncodedStringWithOptions:0];
+
+  /* without a key there is nothing to show as URL or QR code yet */
+  BOOL validURL = authURL && authURL.isTimeOTPURL;
+  self.urlTextField.stringValue = validURL ? authURL.absoluteString : @"";
+  self.qrCodeImageView.image = validURL ? [NSImage QRCodeImageWithString:authURL.absoluteString] : nil;
+
+  NSString *secret = hasKey ? [self.generator.key base32EncodedStringWithOptions:0] : nil;
   self.secretTextField.stringValue = secret ? secret : @"";
   [self.algorithmPopUpButton selectItemWithTag:self.generator.hashAlgorithm];
   [self.digitCountPopUpButton selectItemWithTag:self.generator.numberOfDigits];
   self.timeStepStepper.integerValue = self.generator.timeSlice;
   self.timeStepTextField.stringValue = self.timeStepStepper.stringValue;
+
+  [self _showMessage:(hasKey ? nil : NSLocalizedStringWithDefaultValue(@"TOTP_SETUP_HINT", nil, NSBundle.mainBundle, @"Paste the setup key or the otpauth:// link from the website, or drop its QR code image above.", @"Hint in the verification code setup while no key is entered")) isError:NO];
+  self.saveButton.enabled = self.canSave;
+}
+
+/* nil unless the string is an otpauth URL for time based codes */
+- (KPKTimeOTPGenerator *)_generatorWithURLString:(NSString *)string {
+  NSURL *url = string.length > 0 ? [NSURL URLWithString:[string stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet]] : nil;
+  KPKTimeOTPGenerator *generator;
+  if(url.isSteamOTPURL) {
+    generator = [[KPKSteamOTPGenerator alloc] initWithURL:url.absoluteString];
+  }
+  else if(url.isTimeOTPURL) {
+    generator = [[KPKTimeOTPGenerator alloc] initWithURL:url.absoluteString];
+  }
+  return generator.key.length > 0 ? generator : nil;
 }
 
 @end

@@ -23,6 +23,7 @@
 #import "MPAddCustomFieldContextMenuDelegate.h"
 #import "KeePassKit/KeePassKit.h"
 
+#import "MPActionHelper.h"
 #import "MPEntryInspectorViewController.h"
 
 /*
@@ -67,9 +68,22 @@
 
 /* Time OPT*/
 - (void)_setupTOTPMenuItemsToMenu:(NSMenu *)menu {
-  NSMenuItem *setupItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"SETUP_TOTP_SETTINGS", @"Menu item title editing TOTP settings") action:@selector(showOTPSetup:) keyEquivalent:@""];
+  BOOL hasTimeOTP = self.entry.hasTimeOTP;
+  NSString *title = hasTimeOTP
+  ? NSLocalizedStringWithDefaultValue(@"EDIT_TOTP", nil, NSBundle.mainBundle, @"Edit Verification Code…", @"Menu item to edit the verification code (TOTP) of an entry")
+  : NSLocalizedStringWithDefaultValue(@"SETUP_TOTP", nil, NSBundle.mainBundle, @"Set Up Verification Code…", @"Menu item to set up the verification code (TOTP) of an entry");
+  NSMenuItem *setupItem = [[NSMenuItem alloc] initWithTitle:title action:@selector(showOTPSetup:) keyEquivalent:@""];
   setupItem.target = self.viewController;
+  /* the popover points at the button that opened this menu */
+  if([self.viewController isKindOfClass:MPEntryInspectorViewController.class]) {
+    setupItem.representedObject = ((MPEntryInspectorViewController *)self.viewController).addCustomFieldButton;
+  }
   [menu addItem:setupItem];
+  if(hasTimeOTP) {
+    /* the window controller asks for confirmation */
+    NSMenuItem *removeItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"REMOVE_TOTP", nil, NSBundle.mainBundle, @"Remove Verification Code", @"Menu item to remove the verification code (TOTP) of an entry") action:[MPActionHelper actionOfType:MPActionRemoveTimeOTP] keyEquivalent:@""];
+    [menu addItem:removeItem];
+  }
 }
 
 - (IBAction)_setupTOTPSettings:(id)sender {}

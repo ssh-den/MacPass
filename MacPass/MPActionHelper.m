@@ -60,7 +60,9 @@
                    @(MPActionHideEntryHistory):                 NSStringFromSelector(@selector(hideEntryHistory:)),
                    @(MPActionShowGroupInOutline):               NSStringFromSelector(@selector(showGroupInOutline:)),
                    @(MPActionPerformAutotypeForSelectedEntry):  NSStringFromSelector(@selector(performAutotypeForEntry:)),
-                   @(MPActionRemoveAttachment):                 NSStringFromSelector(@selector(removeAttachment:))
+                   @(MPActionRemoveAttachment):                 NSStringFromSelector(@selector(removeAttachment:)),
+                   @(MPActionSetupTimeOTP):                     NSStringFromSelector(@selector(showOTPSetup:)),
+                   @(MPActionRemoveTimeOTP):                    NSStringFromSelector(@selector(removeOTP:))
                    };
   });
   return actionDict;

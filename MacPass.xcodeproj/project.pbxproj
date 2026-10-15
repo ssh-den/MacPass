@@ -15,6 +15,13 @@
 		AF0000000000000000000064 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "MacPassAutoFill/MPAutoFillPickerView.m"; sourceTree = SOURCE_ROOT; };
 		AF0000000000000000000065 = {isa = PBXBuildFile; fileRef = AF0000000000000000000064; };
 		AF0000000000000000000066 = {isa = PBXBuildFile; fileRef = AF0000000000000000000064; };
+		AF0000000000000000000067 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "KPKEntry+MPTimeOTP.h"; sourceTree = "<group>"; };
+		AF0000000000000000000068 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "KPKEntry+MPTimeOTP.m"; sourceTree = "<group>"; };
+		AF0000000000000000000069 = {isa = PBXBuildFile; fileRef = AF0000000000000000000068; };
+		AF000000000000000000006A = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "MacPassTests/MPTestTimeOTP.m"; sourceTree = SOURCE_ROOT; };
+		AF000000000000000000006B = {isa = PBXBuildFile; fileRef = AF000000000000000000006A; };
+		AF000000000000000000006C = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/MPTOTPSetupViewController.strings; sourceTree = "<group>"; };
+		AF000000000000000000006D = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/MPTOTPViewController.strings; sourceTree = "<group>"; };
 		AF0000000000000000000040 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "MacPass/MPAutoFillCoordinator.m"; sourceTree = SOURCE_ROOT; };
 		AF0000000000000000000041 = {isa = PBXBuildFile; fileRef = AF0000000000000000000040; };
 		AF0000000000000000000047 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MacPass/MPAutoFillServer.h"; sourceTree = SOURCE_ROOT; };
@@ -1359,6 +1366,8 @@
 				4C769CA8213D59BF00A3F60A /* KPKEntry+MPCustomAttributeProperties.m */,
 				4C49CFD424252389004092E7 /* KPKEntry+MPTags.h */,
 				4C49CFD524252389004092E7 /* KPKEntry+MPTags.m */,
+				AF0000000000000000000067 /* KPKEntry+MPTimeOTP.h */,
+				AF0000000000000000000068 /* KPKEntry+MPTimeOTP.m */,
 				4C32B0E51A1D4436007E12F1 /* KPKFormat+MPUTIDetection.h */,
 				4C32B0E61A1D4436007E12F1 /* KPKFormat+MPUTIDetection.m */,
 				4CC6DB7817D23719002C6091 /* KPKNode+IconImage.h */,
@@ -1722,6 +1731,7 @@
 				4C00E33917D8FA3B00F37192 /* DDHotKey */,
 				4C77E36C15B84A240093A587 /* MacPass */,
 				AF0000000000000000000020 /* MPTestAutoFillExtension.m */,
+				AF000000000000000000006A /* MPTestTimeOTP.m */,
 				4C45FB1E178E09ED0010007D /* MacPassTests */,
 				4C77E36515B84A240093A587 /* Frameworks */,
 				4C77E36315B84A240093A587 /* Products */,
@@ -2330,6 +2340,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AF0000000000000000000021 /* MPTestAutoFillExtension.m in Sources */,
+				AF000000000000000000006B /* MPTestTimeOTP.m in Sources */,
 				AF0000000000000000000046 /* MPTestAutoFillCoordinator.m in Sources */,
 				AF0000000000000000000022 /* CredentialProviderViewController.m in Sources */,
 				AF0000000000000000000053 /* MPAutoFillRequestState.m in Sources */,
@@ -2384,6 +2395,7 @@
 				4C61EA0316D2FD0800AC519E /* MPOutlineViewController.m in Sources */,
 				4C65C79C16DD283900E32CFF /* MPToolbarButton.m in Sources */,
 				4C49CFD624252389004092E7 /* KPKEntry+MPTags.m in Sources */,
+				AF0000000000000000000069 /* KPKEntry+MPTimeOTP.m in Sources */,
 				4C431BCD16E2A82800700A81 /* MPPasteBoardController.m in Sources */,
 				4C6AEEF91A043E2B00CA2420 /* MPDocumentController.m in Sources */,
 				4C370EFE215B76CB00703AAE /* MPOutlineTableCellView.m in Sources */,
@@ -2839,6 +2851,7 @@
 				4C9328CD273E6A5F000DCBEE /* zh-Hans */,
 				4C9328CF273E6A63000DCBEE /* de */,
 				69385E3D274ACFDF001AB1E9 /* cs */,
+				AF000000000000000000006C /* ru */,
 			);
 			name = MPTOTPSetupViewController.xib;
 			sourceTree = "<group>";
@@ -2849,6 +2862,7 @@
 				4C9328D1273E6A83000DCBEE /* Base */,
 				4C9328D4273E6A85000DCBEE /* zh-Hans */,
 				4C9328D6273E6A85000DCBEE /* de */,
+				AF000000000000000000006D /* ru */,
 			);
 			name = MPTOTPViewController.xib;
 			sourceTree = "<group>";

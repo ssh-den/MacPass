@@ -77,6 +77,8 @@
 }
 
 - (void)_updateDisplay {
+  /* every attribute change calls this too, keep a single refresh pending */
+  [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_updateDisplay) object:nil];
   KPKEntry *entry = (KPKEntry *)self.representedObject;
   BOOL showTOTP = entry.hasTimeOTP;
   self.view.hidden = !showTOTP;

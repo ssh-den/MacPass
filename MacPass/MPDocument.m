@@ -39,6 +39,7 @@
 
 #import "KeePassKit/KeePassKit.h"
 
+#import "KPKEntry+MPTimeOTP.h"
 #import "NSError+Messages.h"
 #import "NSString+MPPasswordCreation.h"
 #import "NSString+MPHash.h"
@@ -171,7 +172,7 @@ NSString *const MPDocumentGroupKey                            = @"MPDocumentGrou
   
   MPErrorRecoveryAttempter *recovery = [[MPErrorRecoveryAttempter alloc] init];
   recovery.document = self;
-  
+
   NSDictionary *userInfo = @{ NSLocalizedDescriptionKey: NSLocalizedString(@"WARNING_ON_SAVE_NO_PASSWORD_OR_KEY_SET", ""),
                               NSLocalizedRecoverySuggestionErrorKey : NSLocalizedString(@"WARNING_ON_SAVE_NO_PASSWORD_OR_KEY_SET_SUGGESTION", ""),
                               NSLocalizedRecoveryOptionsErrorKey : @[ NSLocalizedString(@"CHANGE_PASSWORD_WITH_DOTS", ""), NSLocalizedString(@"CANCEL", "") ],
@@ -735,6 +736,20 @@ NSString *const MPDocumentGroupKey                            = @"MPDocumentGrou
   return newEntry;
 }
 
+- (void)removeTimeOTPFromEntry:(KPKEntry *)entry {
+  NSArray<KPKAttribute *> *attributes = entry.timeOTPAttributes;
+  if(attributes.count == 0) {
+    return;
+  }
+  /* the inspector records the entry's history on the first change */
+  [self willChangeModelProperty];
+  for(KPKAttribute *attribute in attributes) {
+    [entry removeCustomAttribute:attribute];
+  }
+  [entry.undoManager setActionName:NSLocalizedStringWithDefaultValue(@"REMOVE_TOTP", nil, NSBundle.mainBundle, @"Remove Verification Code", @"Menu item to remove the verification code (TOTP) of an entry")];
+  [self didChangeModelProperty];
+}
+
 - (KPKGroup *)createGroup:(KPKGroup *)parent {
   if(!parent) {
     return nil; // no parent!
@@ -995,6 +1010,19 @@ NSString *const MPDocumentGroupKey                            = @"MPDocumentGrou
     case MPActionShowGroupInOutline:
       valid &= (nil != targetEntry);
       valid &= self.hasSearch;
+      break;
+    case MPActionSetupTimeOTP:
+      valid &= (nil != targetEntry);
+      valid &= !self.historyEntry;
+      if([(id)anItem isKindOfClass:NSMenuItem.class]) {
+        ((NSMenuItem *)anItem).title = targetEntry.hasTimeOTP
+        ? NSLocalizedStringWithDefaultValue(@"EDIT_TOTP", nil, NSBundle.mainBundle, @"Edit Verification Code…", @"Menu item to edit the verification code (TOTP) of an entry")
+        : NSLocalizedStringWithDefaultValue(@"SETUP_TOTP", nil, NSBundle.mainBundle, @"Set Up Verification Code…", @"Menu item to set up the verification code (TOTP) of an entry");
+      }
+      break;
+    case MPActionRemoveTimeOTP:
+      valid &= targetEntry.timeOTPAttributes.count > 0;
+      valid &= !self.historyEntry;
       break;
     default:
       break;

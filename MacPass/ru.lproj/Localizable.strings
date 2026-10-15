@@ -858,3 +858,24 @@
 
 "AUTOFILL_UNLOCK_MESSAGE" = "Разблокируйте эту базу, затем снова выберите подсказку.";
 "AUTOFILL_UNSUPPORTED_PLACEHOLDER" = "Запись содержит неподдерживаемый плейсхолдер или небезопасную/неразрешённую ссылку.";
+
+/* Verification codes (TOTP) */
+"SETUP_TOTP" = "Настроить код проверки…";
+"EDIT_TOTP" = "Изменить код проверки…";
+"REMOVE_TOTP" = "Удалить код проверки";
+"SETUP_TOTP_ACTION" = "Изменение кода проверки";
+"REMOVE_TOTP_ALERT_TITLE_%@" = "Удалить код проверки из «%@»?";
+"REMOVE_TOTP_ALERT_DESCRIPTION" = "MacPass перестанет показывать коды для этой записи. Это можно отменить командой Правка › Отменить.";
+"REMOVE_TOTP_ALERT_BUTTON_REMOVE" = "Удалить";
+"TOTP_SETUP_HINT" = "Вставьте ключ настройки или ссылку otpauth:// с сайта либо перетащите его QR-код в поле выше.";
+"TOTP_SETUP_INVALID_SECRET" = "Это не ключ настройки. В нём только буквы A–Z и цифры 2–7, пробелы не важны.";
+"TOTP_SETUP_INVALID_URL" = "Это не ссылка otpauth:// для кодов проверки.";
+"TOTP_SETUP_INVALID_QR_CODE" = "В изображении нет QR-кода для кодов проверки.";
+"TOTP" = "Код проверки";
+"TOTP_REMAINING_TIME_%ld_SECONDS" = "%ld с";
+"OTP_RFC" = "Стандартный (RFC 6238)";
+"OTP_STEAM" = "Steam";
+"OTP_CUSTOM" = "Свои параметры";
+"HASH_SHA1" = "SHA-1";
+"HASH_SHA256" = "SHA-256";
+"HASH_SHA512" = "SHA-512";

@@ -79,7 +79,8 @@ static void MPContextmenuHelperBeginSection(NSMutableArray *items) {
   BOOL const insertAutotype = MPIsFlagSetInOptions(MPContextMenuAutotype, flags);
   BOOL const insertHistory = MPIsFlagSetInOptions(MPContextMenuHistory, flags);
   BOOL const insertShowGroupInOutline = MPIsFlagSetInOptions(MPContextMenuShowGroupInOutline, flags);
-  
+  BOOL const insertTimeOTP = MPIsFlagSetInOptions(MPContextMenuTimeOTP, flags);
+
   NSMutableArray *items = [NSMutableArray arrayWithCapacity:15];
   if(insertCreate) {
     
@@ -165,6 +166,17 @@ static void MPContextmenuHelperBeginSection(NSMutableArray *items) {
     [urlMenu addItem:openURL];
     
     [items addObjectsFromArray:@[ copyUsername, copyPassword, urlItem]];
+  }
+  if(insertTimeOTP) {
+    MPContextmenuHelperBeginSection(items);
+    /* validation shows "Edit…" instead for an entry that already has a code */
+    NSMenuItem *setupTimeOTP = [[NSMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"SETUP_TOTP", nil, NSBundle.mainBundle, @"Set Up Verification Code…", @"Menu item to set up the verification code (TOTP) of an entry")
+                                                          action:[MPActionHelper actionOfType:MPActionSetupTimeOTP]
+                                                   keyEquivalent:@""];
+    NSMenuItem *removeTimeOTP = [[NSMenuItem alloc] initWithTitle:NSLocalizedStringWithDefaultValue(@"REMOVE_TOTP", nil, NSBundle.mainBundle, @"Remove Verification Code", @"Menu item to remove the verification code (TOTP) of an entry")
+                                                           action:[MPActionHelper actionOfType:MPActionRemoveTimeOTP]
+                                                    keyEquivalent:@""];
+    [items addObjectsFromArray:@[ setupTimeOTP, removeTimeOTP ]];
   }
   if(insertAutotype || insertHistory || insertShowGroupInOutline) {
     MPContextmenuHelperBeginSection(items);

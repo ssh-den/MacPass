@@ -412,6 +412,9 @@ typedef NS_ENUM(NSUInteger, MPInpspectorEditorIndex) {
 }
 
 - (IBAction)showOTPSetup:(id)sender {
+  if(![self.representedObject isKindOfClass:KPKEntry.class]) {
+    return;
+  }
   NSView *location;
   if([sender isKindOfClass:NSView.class]) {
     location = sender;
@@ -421,9 +424,17 @@ typedef NS_ENUM(NSUInteger, MPInpspectorEditorIndex) {
       location = [sender representedObject];
     }
   }
+  if(!location) {
+    /* menu items without a view: show next to the code, or where fields are added */
+    self.activeTab = MPEntryTabGeneral;
+    [self.view layoutSubtreeIfNeeded];
+    location = self.totpViewController.view.hidden ? self.addCustomFieldButton : self.totpViewController.view;
+    [location scrollRectToVisible:location.bounds];
+  }
   MPTOTPSetupViewController *vc = [[MPTOTPSetupViewController alloc] init];
   vc.representedObject = self.representedObject;
-  
+  vc.observer = self.observer;
+
   [self _showPopopver:vc atView:location onEdge:NSMinYEdge];
 }
 

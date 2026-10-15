@@ -472,6 +472,35 @@ typedef void (^MPPasswordChangedBlock)(BOOL didChangePassword);
   [self.splitViewController.inspectorViewController showPluginData:sender];
 }
 
+- (void)showOTPSetup:(id)sender {
+  /* the setup is a popover in the inspector, so it has to be visible and laid out */
+  [self showInspector:sender];
+  [self.window layoutIfNeeded];
+  [self.splitViewController.inspectorViewController showOTPSetup:sender];
+}
+
+- (void)removeOTP:(id)sender {
+  id<MPTargetNodeResolving> entryResolver = [NSApp targetForAction:@selector(currentTargetEntries)];
+  NSArray<KPKEntry *> *entries = entryResolver.currentTargetEntries;
+  if(entries.count != 1) {
+    return;
+  }
+  KPKEntry *entry = entries.firstObject;
+  NSAlert *alert = [[NSAlert alloc] init];
+  alert.alertStyle = NSAlertStyleWarning;
+  NSString *template = NSLocalizedStringWithDefaultValue(@"REMOVE_TOTP_ALERT_TITLE_%@", nil, NSBundle.mainBundle, @"Remove the verification code from “%@”?", @"Title of the alert confirming the removal of an entry's verification code. Contains the entry title");
+  alert.messageText = [NSString stringWithFormat:template, entry.title];
+  alert.informativeText = NSLocalizedStringWithDefaultValue(@"REMOVE_TOTP_ALERT_DESCRIPTION", nil, NSBundle.mainBundle, @"MacPass will no longer show codes for this entry. You can undo this with Edit › Undo.", @"Informative text of the alert confirming the removal of an entry's verification code");
+  NSButton *removeButton = [alert addButtonWithTitle:NSLocalizedStringWithDefaultValue(@"REMOVE_TOTP_ALERT_BUTTON_REMOVE", nil, NSBundle.mainBundle, @"Remove", @"Button confirming the removal of an entry's verification code")];
+  removeButton.hasDestructiveAction = YES;
+  [alert addButtonWithTitle:NSLocalizedString(@"CANCEL", @"")];
+  [alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse returnCode) {
+    if(returnCode == NSAlertFirstButtonReturn) {
+      [(MPDocument *)self.document removeTimeOTPFromEntry:entry];
+    }
+  }];
+}
+
 - (void)toggleInspector:(id)sender {
   [self.splitViewController toggleInspector:sender];
 }
