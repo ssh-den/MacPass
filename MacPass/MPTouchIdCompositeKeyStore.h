@@ -9,6 +9,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class KPKCompositeKey;
+@class LAContext;
 
 @interface MPTouchIdCompositeKeyStore : NSObject
 
@@ -29,6 +30,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)clearStoredCompositeKeys;
 
 - (KPKCompositeKey * _Nullable)compositeKeyForEncryptedKeyData:(NSData *)data error:(NSError **)error;
+/// Decrypts with a context that already passed Touch ID, so the Keychain does not ask again.
+/// Without a context the Keychain shows its own prompt, which reports a cancel as errSecItemNotFound.
+- (KPKCompositeKey * _Nullable)compositeKeyForEncryptedKeyData:(NSData *)data authenticationContext:(LAContext * _Nullable)context error:(NSError **)error;
 - (NSData * _Nullable)encryptedDataForCompositeKey:(KPKCompositeKey *)compositeKey error:(NSError **)error;
 
 @end

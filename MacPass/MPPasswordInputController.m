@@ -39,6 +39,11 @@
 
 #import "NSError+Messages.h"
 
+#import <LocalAuthentication/LocalAuthentication.h>
+
+/* The system Touch ID dialog deactivates MacPass; activations this close to its end are not the user's */
+static const CFTimeInterval MPTouchIDPromptActivationGrace = 1.0;
+
 @interface MPPasswordInputController ()
 
 @property (strong) NSButton *showPasswordButton;
@@ -72,6 +77,8 @@
 @property (strong) id touchIdShortcutMonitor;
 @property (assign) BOOL touchIdFailedForPresentation;
 @property (assign) BOOL touchIdUnlockInProgress;
+@property (assign) BOOL automaticTouchIDPending;
+@property (assign) CFAbsoluteTime touchIdPromptEndTime;
 
 @end
 
@@ -101,6 +108,17 @@
   return [NSString stringWithFormat:NSLocalizedString(@"PASSWORD_INPUT_TOUCH_ID_SHORTCUT", @"Hint for the Touch ID unlock shortcut"), shortcutString];
 }
 
++ (BOOL)isTouchIDCancellationError:(NSError *)error {
+  if([error.domain isEqualToString:NSOSStatusErrorDomain]) {
+    return error.code == errSecUserCanceled;
+  }
+  /* compare the domain by value to avoid linking LocalAuthentication */
+  if([error.domain isEqualToString:@"com.apple.LocalAuthentication"]) {
+    return error.code == LAErrorUserCancel || error.code == LAErrorSystemCancel || error.code == LAErrorAppCancel;
+  }
+  return NO;
+}
+
 - (NSString *)nibName {
   return @"PasswordInputView";
 }
@@ -121,6 +139,9 @@
 
 - (void)viewDidLoad {
   [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(_didSetKeyURL:) name:MPPathControlDidSetURLNotification object:self.keyPathControl];
+  [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(_applicationDidResignActive:) name:NSApplicationDidResignActiveNotification object:nil];
+  [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(_applicationDidBecomeActive:) name:NSApplicationDidBecomeActiveNotification object:nil];
+  [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(_windowDidBecomeKey:) name:NSWindowDidBecomeKeyNotification object:nil];
   self.messageImageView.image = [NSImage imageNamed:NSImageNameCaution];
   [self.passwordTextField bind:NSStringFromSelector(@selector(showPassword)) toObject:self withKeyPath:NSStringFromSelector(@selector(showPassword)) options:nil];
   [self.togglePasswordButton bind:NSValueBinding toObject:self withKeyPath:NSStringFromSelector(@selector(showPassword)) options:nil];
@@ -185,13 +206,51 @@
   self.cancelLabel = cancelLabel;
   [self _reset];
   [self _registerTouchIdShortcutMonitor];
-  if(attemptTouchID && [self _touchIdIsUnlockAvailable]) {
+  self.automaticTouchIDPending = attemptTouchID;
+  if(attemptTouchID) {
     /* Dispatch async to ensure the UI is fully laid out before presenting the Touch ID prompt */
     dispatch_async(dispatch_get_main_queue(), ^{
-      if(self.view.window && [self _touchIdIsUnlockAvailable]) {
-        [self unlockWithTouchID:nil];
-      }
+      [self _attemptAutomaticTouchID];
     });
+  }
+}
+
+#pragma mark -
+#pragma mark Automatic Touch ID
+- (BOOL)_touchIdPromptEndedRecently {
+  return CFAbsoluteTimeGetCurrent() - self.touchIdPromptEndTime < MPTouchIDPromptActivationGrace;
+}
+
+- (void)_attemptAutomaticTouchID {
+  NSWindow *window = self.view.window;
+  if(!self.automaticTouchIDPending || !NSApp.isActive || !window.isKeyWindow || window.attachedSheet) {
+    return;
+  }
+  /* Respect a switch to password entry and do not ask again right after a dismissed prompt */
+  if(self.touchIdCard.hidden || [self _touchIdPromptEndedRecently] || ![self _touchIdIsUnlockAvailable]) {
+    return;
+  }
+  self.automaticTouchIDPending = NO;
+  [self unlockWithTouchID:nil];
+}
+
+- (void)_applicationDidResignActive:(NSNotification *)notification {
+  /* The Touch ID dialog itself deactivates the app; only leaving MacPass arms the next prompt */
+  if(self.touchIdUnlockInProgress || [self _touchIdPromptEndedRecently]) {
+    return;
+  }
+  if(self.completionHandler && self.view.window.isVisible) {
+    self.automaticTouchIDPending = YES;
+  }
+}
+
+- (void)_applicationDidBecomeActive:(NSNotification *)notification {
+  [self _attemptAutomaticTouchID];
+}
+
+- (void)_windowDidBecomeKey:(NSNotification *)notification {
+  if(notification.object == self.view.window) {
+    [self _attemptAutomaticTouchID];
   }
 }
 
@@ -402,9 +461,45 @@
     return;
   }
   self.touchIdUnlockInProgress = YES;
-  NSError *error = nil;
-  KPKCompositeKey* compositeKey = [MPTouchIdCompositeKeyStore.defaultStore compositeKeyForEncryptedKeyData:encryptedKey error:&error];
+  /* Ask through LocalAuthentication first: the Keychain's own prompt reports a cancel as errSecItemNotFound */
+  LAContext *context = [[LAContext alloc] init];
+  context.localizedFallbackTitle = NSLocalizedStringWithDefaultValue(@"TOUCH_ID_PROMPT_ENTER_PASSWORD", nil, NSBundle.mainBundle, @"Enter Password", @"Fallback button in the Touch ID prompt that switches to password entry");
+  NSString *reason = [NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"TOUCH_ID_PROMPT_REASON_%@", nil, NSBundle.mainBundle, @"unlock “%@”", @"Touch ID prompt reason, shown after “MacPass is trying to”; the placeholder is the database name"), ((NSDocument *)self.windowController.document).displayName ?: NSRunningApplication.currentApplication.localizedName];
+  LAPolicy policy = LAPolicyDeviceOwnerAuthenticationWithBiometrics;
+  if(@available(macOS 10.15, *)) {
+    /* matches the Keychain item's access control: Touch ID or an Apple Watch */
+    policy = LAPolicyDeviceOwnerAuthenticationWithBiometricsOrWatch;
+  }
+  [context evaluatePolicy:policy localizedReason:reason reply:^(BOOL success, NSError *authenticationError) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [self _finishTouchIDUnlockWithEncryptedKey:encryptedKey context:(success ? context : nil) error:authenticationError];
+    });
+  }];
+}
+
+- (void)_finishTouchIDUnlockWithEncryptedKey:(NSData *)encryptedKey context:(LAContext *)context error:(NSError *)authenticationError {
   self.touchIdUnlockInProgress = NO;
+  self.touchIdPromptEndTime = CFAbsoluteTimeGetCurrent();
+  /* The prompt does not block: the database may have been unlocked with the password meanwhile */
+  if(!self.view.window || !self.completionHandler) {
+    return;
+  }
+  if(!context && [self.class isTouchIDCancellationError:authenticationError]) {
+    /* A dismissed prompt is no failure: keep Touch ID ready for the button, shortcut or next activation */
+    if(self.view.window) {
+      [self.view.window makeFirstResponder:self.touchIdButton];
+    }
+    return;
+  }
+  if(!context && authenticationError.code == LAErrorUserFallback && [authenticationError.domain isEqualToString:LAErrorDomain]) {
+    [self _showManualCard:YES moveFocus:YES];
+    return;
+  }
+  NSError *error = authenticationError;
+  KPKCompositeKey* compositeKey = nil;
+  if(context) {
+    compositeKey = [MPTouchIdCompositeKeyStore.defaultStore compositeKeyForEncryptedKeyData:encryptedKey authenticationContext:context error:&error];
+  }
   if(!compositeKey) {
     self.touchIdFailedForPresentation = YES;
     self.touchIdButton.enabled = NO;

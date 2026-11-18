@@ -38,6 +38,7 @@ typedef NS_OPTIONS(NSUInteger, MPPasswordInputPresentationState) {
 typedef BOOL (^passwordInputCompletionBlock)(KPKCompositeKey *key, NSURL* keyFileURL, BOOL didCancel, NSError *__autoreleasing*error);
 
 - (void)requestPasswordWithMessage:(NSString *)message cancelLabel:(NSString *)cancelLabel completionHandler:(passwordInputCompletionBlock)completionHandler;
+/* attemptTouchID asks for Touch ID as soon as the window is key; afterwards the prompt returns each time the app is activated again */
 - (void)requestPasswordWithMessage:(NSString *)message cancelLabel:(NSString *)cancelLabel attemptTouchID:(BOOL)attemptTouchID completionHandler:(passwordInputCompletionBlock)completionHandler;
 
 + (MPPasswordInputPresentationState)presentationStateForTouchIDMode:(NSInteger)touchIDMode
@@ -46,6 +47,8 @@ typedef BOOL (^passwordInputCompletionBlock)(KPKCompositeKey *key, NSURL* keyFil
                                                        shortcutValid:(BOOL)shortcutValid
                                                             supported:(BOOL)supported;
 + (NSString *)touchIDShortcutHintForHotKey:(DDHotKey *)shortcut;
+/* YES if the user or the system dismissed the Touch ID prompt; this is no unlock failure */
++ (BOOL)isTouchIDCancellationError:(NSError *)error;
 
 
 @end

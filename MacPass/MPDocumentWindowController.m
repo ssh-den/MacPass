@@ -158,7 +158,8 @@ typedef void (^MPPasswordChangedBlock)(BOOL didChangePassword);
   self.toolbarDelegate.toolbar = self.toolbar;
   
   if(document.encrypted) {
-    [self showPasswordInput];
+    /* Opening a database asks for Touch ID right away instead of waiting for the button */
+    [self showPasswordInputWithMessage:nil attemptTouchID:YES];
   }
   else {
     [self showEntries];

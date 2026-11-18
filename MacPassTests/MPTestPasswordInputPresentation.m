@@ -1,6 +1,7 @@
 #import <XCTest/XCTest.h>
 #import <Carbon/Carbon.h>
 #import <KeePassKit/KeePassKit.h>
+#import <LocalAuthentication/LocalAuthentication.h>
 
 #import "MPPasswordInputController.h"
 #import "MPSettingsHelper.h"
@@ -73,6 +74,9 @@
 - (IBAction)_submit:(id)sender;
 - (IBAction)unlockWithTouchID:(id)sender;
 - (BOOL)_touchIdIsUnlockAvailable;
+- (void)_attemptAutomaticTouchID;
+- (void)_applicationDidResignActive:(NSNotification *)notification;
+- (void)_finishTouchIDUnlockWithEncryptedKey:(NSData *)encryptedKey context:(LAContext *)context error:(NSError *)authenticationError;
 @end
 
 @interface MPTestTouchIDActionController : MPPasswordInputController
@@ -222,6 +226,72 @@
   NSError *error = nil;
   XCTAssertNil([store encryptedDataForCompositeKey:[[KPKCompositeKey alloc] init] error:&error]);
   XCTAssertEqualObjects(error, store.retrievalError);
+}
+
+- (void)testDismissedTouchIDPromptIsNoFailure {
+  XCTAssertTrue([MPPasswordInputController isTouchIDCancellationError:[NSError errorWithDomain:NSOSStatusErrorDomain code:errSecUserCanceled userInfo:nil]]);
+  XCTAssertTrue([MPPasswordInputController isTouchIDCancellationError:[NSError errorWithDomain:@"com.apple.LocalAuthentication" code:LAErrorUserCancel userInfo:nil]]);
+  XCTAssertTrue([MPPasswordInputController isTouchIDCancellationError:[NSError errorWithDomain:@"com.apple.LocalAuthentication" code:LAErrorSystemCancel userInfo:nil]]);
+  XCTAssertFalse([MPPasswordInputController isTouchIDCancellationError:[NSError errorWithDomain:@"com.apple.LocalAuthentication" code:LAErrorAuthenticationFailed userInfo:nil]]);
+  XCTAssertFalse([MPPasswordInputController isTouchIDCancellationError:[NSError errorWithDomain:NSOSStatusErrorDomain code:errSecItemNotFound userInfo:nil]]);
+  XCTAssertFalse([MPPasswordInputController isTouchIDCancellationError:nil]);
+}
+
+- (void)testAutomaticTouchIDWaitsForAKeyWindow {
+  MPTestTouchIDActionController *controller = [[MPTestTouchIDActionController alloc] init];
+  [controller requestPasswordWithMessage:nil cancelLabel:nil attemptTouchID:YES completionHandler:^BOOL(KPKCompositeKey *key, NSURL *url, BOOL cancel, NSError **error) {
+    return YES;
+  }];
+  [controller _attemptAutomaticTouchID];
+  XCTAssertEqual(controller.touchIDRequests, 0);
+  XCTAssertTrue([[controller valueForKey:@"automaticTouchIDPending"] boolValue]);
+
+  [controller requestPasswordWithMessage:nil cancelLabel:nil attemptTouchID:NO completionHandler:^BOOL(KPKCompositeKey *key, NSURL *url, BOOL cancel, NSError **error) {
+    return YES;
+  }];
+  XCTAssertFalse([[controller valueForKey:@"automaticTouchIDPending"] boolValue]);
+}
+
+- (void)testCancelledTouchIDPromptShowsNoError {
+  MPPasswordInputController *controller = [[MPPasswordInputController alloc] init];
+  NSWindow *window = [NSWindow windowWithContentViewController:controller];
+  __block BOOL submitted = NO;
+  [controller requestPasswordWithMessage:nil cancelLabel:nil completionHandler:^BOOL(KPKCompositeKey *key, NSURL *url, BOOL cancel, NSError **error) {
+    submitted = YES;
+    return YES;
+  }];
+  NSTextField *message = [controller valueForKey:@"messageInfoTextField"];
+
+  [controller _finishTouchIDUnlockWithEncryptedKey:[NSData data] context:nil error:[NSError errorWithDomain:LAErrorDomain code:LAErrorUserCancel userInfo:nil]];
+  XCTAssertFalse([[controller valueForKey:@"touchIdFailedForPresentation"] boolValue]);
+  XCTAssertTrue(message.hidden);
+  XCTAssertFalse(submitted);
+
+  [controller _finishTouchIDUnlockWithEncryptedKey:[NSData data] context:nil error:[NSError errorWithDomain:LAErrorDomain code:LAErrorBiometryLockout userInfo:nil]];
+  XCTAssertTrue([[controller valueForKey:@"touchIdFailedForPresentation"] boolValue]);
+  XCTAssertFalse(message.hidden);
+  XCTAssertFalse([[controller valueForKey:@"manualCard"] isHidden]);
+  XCTAssertFalse(submitted);
+  window.contentViewController = nil;
+}
+
+- (void)testOnlyLeavingTheAppArmsTheNextTouchIDPrompt {
+  MPTestTouchIDActionController *controller = [[MPTestTouchIDActionController alloc] init];
+  NSWindow *window = [NSWindow windowWithContentViewController:controller];
+  [window orderFront:nil];
+  [controller requestPasswordWithMessage:nil cancelLabel:nil attemptTouchID:NO completionHandler:^BOOL(KPKCompositeKey *key, NSURL *url, BOOL cancel, NSError **error) {
+    return YES;
+  }];
+
+  /* the system Touch ID dialog deactivates the app while it is shown */
+  [controller setValue:@(CFAbsoluteTimeGetCurrent()) forKey:@"touchIdPromptEndTime"];
+  [controller _applicationDidResignActive:nil];
+  XCTAssertFalse([[controller valueForKey:@"automaticTouchIDPending"] boolValue]);
+
+  [controller setValue:@(0) forKey:@"touchIdPromptEndTime"];
+  [controller _applicationDidResignActive:nil];
+  XCTAssertTrue([[controller valueForKey:@"automaticTouchIDPending"] boolValue]);
+  [window orderOut:nil];
 }
 
 - (MPPasswordInputPresentationState)stateForMode:(MPTouchIDKeyStorage)mode

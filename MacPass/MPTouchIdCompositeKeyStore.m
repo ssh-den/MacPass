@@ -11,6 +11,7 @@
 
 #import "NSError+Messages.h"
 #import <KeePassKit/KeePassKit.h>
+#import <LocalAuthentication/LocalAuthentication.h>
 
 @interface MPTouchIdCompositeKeyStore ()
 @property (readonly, strong) NSMutableDictionary* keys;
@@ -173,17 +174,24 @@
 }
 
 - (KPKCompositeKey *)compositeKeyForEncryptedKeyData:(NSData *)data error:(NSError *__autoreleasing  _Nullable *)error {
+  return [self compositeKeyForEncryptedKeyData:data authenticationContext:nil error:error];
+}
+
+- (KPKCompositeKey *)compositeKeyForEncryptedKeyData:(NSData *)data authenticationContext:(LAContext *)context error:(NSError *__autoreleasing  _Nullable *)error {
   if(nil == data) {
     return nil;
   }
-  
+
   NSData* tag = [MPTouchIdUnlockPrivateKeyTag dataUsingEncoding:NSUTF8StringEncoding];
-  NSDictionary *queryPrivateKey = @{
+  NSMutableDictionary *queryPrivateKey = [@{
     (id)kSecClass: (id)kSecClassKey,
     (id)kSecAttrApplicationTag: tag,
     (id)kSecAttrKeyType: (id)kSecAttrKeyTypeRSA,
     (id)kSecReturnRef: @YES,
-  };
+  } mutableCopy];
+  if(context) {
+    queryPrivateKey[(id)kSecUseAuthenticationContext] = context;
+  }
   SecKeyRef privateKey = NULL;
   OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)queryPrivateKey, (CFTypeRef *)&privateKey);
   if(status != errSecSuccess) {
