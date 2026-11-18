@@ -188,9 +188,6 @@
 /* Class = "NSMenuItem"; title = "Export"; ObjectID = "tz9-yK-pOf"; */
 "tz9-yK-pOf.title" = "Експортувати";
 
-/* Class = "NSMenuItem"; title = "Check for Updates…"; ObjectID = "zMO-8r-g5v"; */
-"zMO-8r-g5v.title" = "Перевірити наявність оновлень…";
-
 /* Class = "NSMenuItem"; title = "Autotype Doctor"; ObjectID = "zWx-Re-iuJ"; */
 "zWx-Re-iuJ.title" = "Помічник автоматичного введення";
 

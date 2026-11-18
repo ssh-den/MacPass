@@ -97,12 +97,6 @@
 /* Alert message text to ask the user if he really want to uninstall the plugin. Include %@ placeholder for plugin name */
 "ALERT_MESSAGE_TEXT_REALLY_UNINSTALL_PLUGIN_%@" = "Должен ли плагин %@ быть удален?";
 
-/* Informative text of the disabled updates alert! */
-"ALERT_UPDATES_DISABLED_INFORMATIVE_TEXT_%@!" = "Обновления для текущей сборки %@ отключены!";
-
-/* Message text for disabled updates alert! */
-"ALERT_UPDATES_DISABLED_MESSAGE_TEXT" = "Обновления отключены";
-
 /* Attachments column title (shows counts)
    Menu item to toggle display of attachment count column in entry table */
 "ATTACHMENTS" = "Файлы";
@@ -790,9 +784,6 @@
 /* No comment provided by engineer. */
 "UNKNOWN_TOOLBAR_ITEM" = "Неизвестный элемент панели инструментов";
 
-/* Update Settings Label */
-"UPDATE_PREFERENCES" = "Обновления";
-
 /* Menu item to toggle display of url column in entry table
    Submenu with options what to do with the URL of an entry
    Url column title
@@ -853,6 +844,15 @@
 "PASSWORD_INPUT_UNLOCK_WITH_TOUCH_ID" = "Разблокировать с Touch ID";
 "PASSWORD_INPUT_UNLOCK_METHOD" = "Способ разблокировки";
 "PASSWORD_INPUT_REMOVE_KEY_FILE" = "Удалить файл ключа";
+"TOUCH_ID_PROMPT_ENTER_PASSWORD" = "Ввести пароль";
+"TOUCH_ID_PROMPT_REASON_%@" = "разблокировать «%@»";
+
+/* About panel */
+"ABOUT_FORK_DESCRIPTION" = "Неофициальный форк MacPass: разблокировка по Touch ID, автозаполнение паролей и упрощённая настройка кодов проверки.";
+"ABOUT_FORK_MAINTAINER_%@" = "Форк от ssh-den: %@";
+"ABOUT_FORK_BASED_ON_%@_%@" = "Основан на MacPass %1$@ от HicknHack Software GmbH и участников MacPass: %2$@";
+"ABOUT_FORK_TOUCH_ID_CREDITS" = "Код Touch ID предоставили orestesgaolin и Anand Hegde.";
+"ABOUT_FORK_LICENSE" = "Свободное ПО по лицензии GNU General Public License версии 3, без каких-либо гарантий. О проблемах сообщайте в этот форк, а не команде MacPass. Автоматических обновлений нет.";
 
 "GLOBAL_AUTOTYPE_SOUND_ON_NO_MATCH" = "Звук, если глобальный автоввод не нашёл совпадений";
 

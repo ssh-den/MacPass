@@ -185,9 +185,6 @@
 /* Class = "NSMenuItem"; title = "Export To"; ObjectID = "tz9-yK-pOf"; */
 "tz9-yK-pOf.title" = "エクスポート";
 
-/* Class = "NSMenuItem"; title = "Check for Updates…"; ObjectID = "zMO-8r-g5v"; */
-"zMO-8r-g5v.title" = "アップデートを確認…";
-
 /* Class = "NSMenuItem"; title = "Autotype Doctor"; ObjectID = "zWx-Re-iuJ"; */
 "zWx-Re-iuJ.title" = "自動入力の検査";
 

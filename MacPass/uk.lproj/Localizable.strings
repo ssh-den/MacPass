@@ -85,12 +85,6 @@
 /* Alert message text to ask the user if he really want to uninstall the plugin. Include %@ placeholder for plugin name */
 "ALERT_MESSAGE_TEXT_REALLY_UNINSTALL_PLUGIN_%@" = "Плагін %@ справді треба видалити?";
 
-/* Informative text of the disabled updates alert! */
-"ALERT_UPDATES_DISABLED_INFORMATIVE_TEXT_%@!" = "Оновлення цієї збірки %@ відключені!";
-
-/* Message text for disabled updates alert! */
-"ALERT_UPDATES_DISABLED_MESSAGE_TEXT" = "Оновлення відключені";
-
 /* Attachments column title (shows counts)
    Menu item to toggle display of attachment count column in entry table */
 "ATTACHMENTS" = "Прикріплені файли";
@@ -774,9 +768,6 @@
 
 /* No comment provided by engineer. */
 "UNKNOWN_TOOLBAR_ITEM" = "Невідовий елемент панелі";
-
-/* Update Settings Label */
-"UPDATE_PREFERENCES" = "Оновлення";
 
 /* Menu item to toggle display of url column in entry table
    Submenu with options what to do with the URL of an entry

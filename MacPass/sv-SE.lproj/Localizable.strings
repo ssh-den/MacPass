@@ -568,9 +568,6 @@
 /* No comment provided by engineer. */
 "UNKNOWN_TOOLBAR_ITEM" = "Okänt verktygsradsföremål";
 
-/* Update Settings Label */
-"UPDATE_PREFERENCES" = "Uppdateringar";
-
 /* Menu item to toggle display of url column in entry table
    Submenu with options what to do with the URL of an entry
    Url column title

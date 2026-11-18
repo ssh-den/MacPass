@@ -32,6 +32,7 @@
 
 #import "NSApplication+MPAdditions.h"
 #import "MPAppDelegate.h"
+#import "MPConstants.h"
 #import "MPSettingsHelper.h"
 
 #import "NSError+Messages.h"
@@ -91,7 +92,9 @@ NSString *const MPPluginHostPluginBundleIdentifiyerKey = @"MPPluginHostPluginBun
 }
 
 - (NSString *)version {
-  return NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"];
+  NSDictionary *info = NSBundle.mainBundle.infoDictionary;
+  /* The fork's own version (0.8.2-fork.1) is unknown to the MacPass plugin catalog */
+  return info[MPBundleUpstreamVersionKey] ?: info[@"CFBundleShortVersionString"];
 }
 
 - (NSArray<MPPlugin *> *)plugins {

@@ -2,6 +2,8 @@
 
 This fork of [MacPass](https://github.com/MacPass/MacPass) improves Touch ID unlock with a dedicated unlock view, a configurable keyboard shortcut, and automatic Touch ID prompts when global autotype needs to unlock a database. It also adds settings to expire stored Touch ID keys, clear them on sleep, or forget them manually. On macOS 13 and later it can fill website passwords from the active database through macOS Password AutoFill.
 
+Fork versions are named after the MacPass release they are based on, such as `0.8.2-fork.1`. The fork has no automatic updates: build a new version to update. Plugins still check compatibility against the upstream MacPass version.
+
 Thanks to [orestesgaolin](https://github.com/orestesgaolin/MacPass) and [Anand Hegde](https://github.com/anandghegde) ([PR #1334](https://github.com/MacPass/MacPass/pull/1334)) for sharing the Touch ID code that helped make this fork possible.
 
 ## Upstream website and security notice
@@ -44,9 +46,9 @@ git clone https://github.com/MacPass/MacPass --recursive
 cd MacPass
 carthage bootstrap --platform macOS
 ```
-After that you can build and run in Xcode. The following command will build and make the application available through Spotlight. If you run into signing issues take a look at [Issue #92](https://github.com/MacPass/MacPass/issues/92). Since Sparkle is disabled only on the CI build and in Debug mode, you have to explicitly disable it in Release. Otherwise warnings on unsecure updates will appear.
+After that you can build and run in Xcode. The following command will build and make the application available through Spotlight. If you run into signing issues take a look at [Issue #92](https://github.com/MacPass/MacPass/issues/92).
 
-    xcodebuild -scheme MacPass -target MacPass -configuration Release CODE_SIGNING_REQUIRED=NO NO_SPARKLE=NO_SPARKLE
+    xcodebuild -scheme MacPass -target MacPass -configuration Release CODE_SIGNING_REQUIRED=NO
 
 For local development with persistent Accessibility and Screen Recording permissions,
 use the same Apple Development signing identity for every build. Ad hoc signing

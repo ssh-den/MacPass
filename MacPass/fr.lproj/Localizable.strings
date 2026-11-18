@@ -85,12 +85,6 @@
 /* Alert message text to ask the user if he really want to uninstall the plugin. Include %@ placeholder for plugin name */
 "ALERT_MESSAGE_TEXT_REALLY_UNINSTALL_PLUGIN_%@" = "Voulez-vous vraiment supprimer le plugin %@ ?";
 
-/* Informative text of the disabled updates alert! */
-"ALERT_UPDATES_DISABLED_INFORMATIVE_TEXT_%@!" = "Les mises à jour concernant la version de %@ sont désactivées !";
-
-/* Message text for disabled updates alert! */
-"ALERT_UPDATES_DISABLED_MESSAGE_TEXT" = "Les mises à jour sont désactivées !";
-
 /* Attachments column title (shows counts)
    Menu item to toggle display of attachment count column in entry table */
 "ATTACHMENTS" = "Fichiers joints";
@@ -789,9 +783,6 @@
 
 /* No comment provided by engineer. */
 "UNKNOWN_TOOLBAR_ITEM" = "Élément de barre d'outils inconnu";
-
-/* Update Settings Label */
-"UPDATE_PREFERENCES" = "Mises à jour";
 
 /* Menu item to toggle display of url column in entry table
    Submenu with options what to do with the URL of an entry

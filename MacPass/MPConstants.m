@@ -29,6 +29,7 @@ NSString *const MPPluginUTI       = @"com.hicknhack.macpass.plugin";
 
 NSString *const MPBundleHelpURLKey                = @"MPHelpURL";
 NSString *const MPBundlePluginRepositoryURLKey    = @"MPPluginRepositoryURL";
+NSString *const MPBundleUpstreamVersionKey        = @"MPUpstreamVersion";
 NSString *const MPPluginCompatibilityURLKey  = @"MPPluginCompatibilityURLKey";
 
 NSString *const MPTouchIdUnlockPublicKeyTag = @"com.hicknhacksoftware.macpass.publickey";

@@ -133,8 +133,6 @@ BUILD_FOLDER="${DERIVED_DATA_FOLDER}"/Build/Products/Release
 APP_BUNDLE=MacPass.app
 APP_BUNDLE_ZIP="${APP_BUNDLE}".zip
 APP_FRAMEWORK_PATH="${APP_BUNDLE}"/Contents/Frameworks
-SPARKLE_FRAMEWORK="${APP_FRAMEWORK_PATH}"/Sparkle.framework
-SPARKLE_VERSION="${SPARKLE_FRAMEWORK}"/Versions/B
 TRANSFORMERKIT_FRAMEWORK="${APP_FRAMEWORK_PATH}"/TransformerKit.framework
 KEEPASSKIT_FRAMEWORK="${APP_FRAMEWORK_PATH}"/KeePassKit.framework
 KISSXML_FRAMEWORK="${APP_FRAMEWORK_PATH}"/KissXML.framework
@@ -147,16 +145,6 @@ echo "Building..."
 xcodebuild build -configuration Release -project MacPass.xcodeproj -scheme MacPass DEVELOPMENT_TEAM="${TEAMID}" MACPASS_APP_BUNDLE_IDENTIFIER="${BUNDLE_ID}" CODE_SIGNING_ALLOWED=NO -derivedDataPath "${DERIVED_DATA_FOLDER}"
 cd "${BUILD_FOLDER}"
 echo ""
-# Sparkle 2 helpers, innermost first, as Sparkle documents: they keep their own
-# entitlements (the Downloader's sandbox) and take none of MacPass's.
-echo "Signing Sparkle - XPC services..."
-codesign --sign "${IDENTITY}" --options runtime --timestamp --force "${SPARKLE_VERSION}"/XPCServices/Installer.xpc
-codesign --sign "${IDENTITY}" --options runtime --timestamp --force --preserve-metadata=entitlements "${SPARKLE_VERSION}"/XPCServices/Downloader.xpc
-echo "Signing Sparkle - Autoupdate and Updater..."
-codesign --sign "${IDENTITY}" --options runtime --timestamp --force "${SPARKLE_VERSION}"/Autoupdate
-codesign --sign "${IDENTITY}" --options runtime --timestamp --force "${SPARKLE_VERSION}"/Updater.app
-echo "Signing Sparkle..."
-codesign --sign "${IDENTITY}" --options runtime --timestamp --force "${SPARKLE_FRAMEWORK}"
 echo "Signing TransformerKit..."
 codesign --sign "${IDENTITY}" --options runtime --timestamp --force "${TRANSFORMERKIT_FRAMEWORK}"
 echo "Signing HNHUi..."

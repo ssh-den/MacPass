@@ -39,6 +39,8 @@ FOUNDATION_EXPORT NSString *const MPPluginUTI;
  */
 FOUNDATION_EXPORT NSString *const MPBundleHelpURLKey;
 FOUNDATION_EXPORT NSString *const MPBundlePluginRepositoryURLKey;
+/* MacPass version this fork is based on; plugins check compatibility against it */
+FOUNDATION_EXPORT NSString *const MPBundleUpstreamVersionKey;
 FOUNDATION_EXPORT NSString *const MPPluginCompatibilityURLKey;
 
 /**

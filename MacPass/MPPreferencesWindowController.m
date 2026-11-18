@@ -27,7 +27,6 @@
 #import "MPGeneralPreferencesController.h"
 #import "MPIntegrationPreferencesController.h"
 #import "MPWorkflowPreferencesController.h"
-#import "MPUpdatePreferencesController.h"
 #import "MPPluginPreferencesController.h"
 #import "MPTabViewController.h"
 #import "MPSecurityPreferencesController.h"
@@ -117,9 +116,6 @@
     case MPPreferencesTabIntegration:
       tabClass = MPIntegrationPreferencesController.class;
       break;
-    case MPPreferencesTabUpdate:
-      tabClass = MPUpdatePreferencesController.class;
-      break;
     case MPPreferencesTabWorkflow:
       tabClass = MPWorkflowPreferencesController.class;
       break;
@@ -143,7 +139,6 @@
                                                                  [[MPSecurityPreferencesController alloc] init],
                                                                  [[MPIntegrationPreferencesController alloc] init],
                                                                  [[MPWorkflowPreferencesController alloc] init],
-                                                                 [[MPUpdatePreferencesController alloc] init],
                                                                  [[MPPluginPreferencesController alloc] init] ];
   for(NSViewController<MPPreferencesTab> *controller in controllers) {
     NSString *identifier = controller.identifier;

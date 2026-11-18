@@ -184,9 +184,6 @@
 /* Class = "NSMenuItem"; title = "Focus Inspector"; ObjectID = "Zje-Me-5c8"; */
 "Zje-Me-5c8.title" = "啟用檢查器";
 
-/* Class = "NSMenuItem"; title = "Check for Updates…"; ObjectID = "zMO-8r-g5v"; */
-"zMO-8r-g5v.title" = "檢查更新…";
-
 /* Class = "NSMenuItem"; title = "Merge With…"; ObjectID = "zvE-0h-UxI"; */
 "zvE-0h-UxI.title" = "進行合併...";
 

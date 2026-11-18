@@ -188,8 +188,5 @@
 /* Class = "NSMenuItem"; title = "Export"; ObjectID = "tz9-yK-pOf"; */
 "tz9-yK-pOf.title" = "Exportera";
 
-/* Class = "NSMenuItem"; title = "Check for Updates…"; ObjectID = "zMO-8r-g5v"; */
-"zMO-8r-g5v.title" = "Sök efter uppdateringar…";
-
 /* Class = "NSMenuItem"; title = "Merge…"; ObjectID = "zvE-0h-UxI"; */
 "zvE-0h-UxI.title" = "Slå ihop…";

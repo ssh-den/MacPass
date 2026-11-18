@@ -79,12 +79,6 @@
 /* Alert message text to ask the user if he really want to uninstall the plugin. Include %@ placeholder for plugin name */
 "ALERT_MESSAGE_TEXT_REALLY_UNINSTALL_PLUGIN_%@" = "Should the Plugin %@ really be uninstalled?";
 
-/* Informative text of the disabled updates alert! */
-"ALERT_UPDATES_DISABLED_INFORMATIVE_TEXT_%@!" = "Updates for this build of %@ are disabled!";
-
-/* Message text for disabled updates alert! */
-"ALERT_UPDATES_DISABLED_MESSAGE_TEXT" = "Updates are Disabled!";
-
 /* Attachments column title (shows counts)
    Menu item to toggle display of attachment count column in entry table */
 "ATTACHMENTS" = "Attachments";
@@ -824,9 +818,6 @@
 
 /* No comment provided by engineer. */
 "UNKNOWN_TOOLBAR_ITEM" = "Unknown Toolbar Item";
-
-/* Update Settings Label */
-"UPDATE_PREFERENCES" = "Updates";
 
 /* Menu item to toggle display of url column in entry table
    Submenu with options what to do with the URL of an entry

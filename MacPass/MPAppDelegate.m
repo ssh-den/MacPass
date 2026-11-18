@@ -51,8 +51,6 @@
 
 #import "KeePassKit/KeePassKit.h"
 
-#import <Sparkle/Sparkle.h>
-
 NSString *const MPDidChangeStoredKeyFilesSettings = @"com.hicknhack.macpass.MPDidChangeStoredKeyFilesSettings";
 
 typedef NS_OPTIONS(NSInteger, MPAppStartupState) {
@@ -69,7 +67,6 @@ typedef NS_OPTIONS(NSInteger, MPAppStartupState) {
 }
 
 @property (strong) NSWindow *welcomeWindow;
-@property (strong) SPUUpdater *updater;
 @property (strong) MPAutoFillCoordinator *autoFillCoordinator API_AVAILABLE(macos(13.0));
 @property (strong) IBOutlet NSWindow *passwordCreatorWindow;
 @property (strong, nonatomic) MPPreferencesWindowController *preferencesController;
@@ -271,19 +268,10 @@ typedef NS_OPTIONS(NSInteger, MPAppStartupState) {
   if(@available(macOS 13.0, *)) {
     if(!NSApp.isRunningTests) self.autoFillCoordinator = [MPAutoFillCoordinator start];
   }
-#if defined(NO_SPARKLE)
-  NSLog(@"Sparkle explicitly disabled!!!");
-#endif
   /* Initalizes Global Daemons */
   [MPLockDaemon defaultDaemon];
   [MPAutotypeDaemon defaultDaemon];
   [MPPluginHost sharedHost];
-#if !defined(DEBUG) && !defined(NO_SPARKLE)
-  /* Disable updates if in debug or nosparkle  */
-  SPUStandardUserDriver *userDriver = [[SPUStandardUserDriver alloc] initWithHostBundle:NSBundle.mainBundle delegate:nil];
-  self.updater = [[SPUUpdater alloc] initWithHostBundle:NSBundle.mainBundle applicationBundle:NSBundle.mainBundle userDriver:userDriver delegate:nil];
-  [self.updater startUpdater:nil];
-#endif
   self.startupState |= MPAppStartupStateFinishedLaunch;
   // Here we just opt-in for allowing our bar to be customized throughout the app.
   NSApplication.sharedApplication.automaticCustomizeTouchBarMenuItemEnabled = YES;
@@ -425,16 +413,41 @@ typedef NS_OPTIONS(NSInteger, MPAppStartupState) {
   [MPAutotypeDoctor.defaultDoctor runChecksAndPresentResults];
 }
 
-- (void)checkForUpdates:(id)sender {
-#if defined(DEBUG) || defined(NO_SPARKLE)
-  NSAlert *alert = [[NSAlert alloc] init];
-  alert.messageText = NSLocalizedString(@"ALERT_UPDATES_DISABLED_MESSAGE_TEXT", @"Message text for disabled updates alert!");
-  alert.informativeText = [NSString stringWithFormat:NSLocalizedString(@"ALERT_UPDATES_DISABLED_INFORMATIVE_TEXT_%@!", @"Informative text of the disabled updates alert!"), NSApp.applicationName];
-  [alert addButtonWithTitle:NSLocalizedString(@"OK", @"Ok Button to dismiss disabled updates alert")];
-  [alert runModal];
-#else
-  [self.updater checkForUpdates];
-#endif
+- (void)showAboutPanel:(id)sender {
+  [NSApp orderFrontStandardAboutPanelWithOptions:@{ NSAboutPanelOptionCredits: [self.class aboutPanelCredits] }];
+}
+
++ (NSAttributedString *)aboutPanelCredits {
+  NSDictionary *info = NSBundle.mainBundle.infoDictionary;
+  NSString *forkURL = info[MPBundleHelpURLKey];
+  NSString *upstreamURL = @"https://github.com/MacPass/MacPass";
+  NSString *upstreamVersion = info[MPBundleUpstreamVersionKey];
+
+  NSMutableParagraphStyle *paragraph = [[NSMutableParagraphStyle alloc] init];
+  paragraph.alignment = NSTextAlignmentCenter;
+  paragraph.paragraphSpacing = 6;
+  NSDictionary *attributes = @{ NSFontAttributeName: [NSFont systemFontOfSize:NSFont.smallSystemFontSize],
+                                NSForegroundColorAttributeName: NSColor.labelColor,
+                                NSParagraphStyleAttributeName: paragraph };
+  NSMutableAttributedString *credits = [[NSMutableAttributedString alloc] init];
+  void (^addParagraph)(NSString *, NSString *) = ^(NSString *text, NSString *link) {
+    if(credits.length > 0) {
+      [credits appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:attributes]];
+    }
+    NSMutableAttributedString *line = [[NSMutableAttributedString alloc] initWithString:text attributes:attributes];
+    NSRange linkRange = link ? [text rangeOfString:link] : NSMakeRange(NSNotFound, 0);
+    if(linkRange.location != NSNotFound) {
+      [line addAttribute:NSLinkAttributeName value:[NSURL URLWithString:link] range:linkRange];
+    }
+    [credits appendAttributedString:line];
+  };
+
+  addParagraph(NSLocalizedStringWithDefaultValue(@"ABOUT_FORK_DESCRIPTION", nil, NSBundle.mainBundle, @"Unofficial fork of MacPass with Touch ID unlock, Password AutoFill and easier verification codes.", @"About panel: what this fork is"), nil);
+  addParagraph([NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"ABOUT_FORK_MAINTAINER_%@", nil, NSBundle.mainBundle, @"Fork by ssh-den: %@", @"About panel: fork author and repository link"), forkURL], forkURL);
+  addParagraph([NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"ABOUT_FORK_BASED_ON_%@_%@", nil, NSBundle.mainBundle, @"Based on MacPass %@ by HicknHack Software GmbH and the MacPass contributors: %@", @"About panel: upstream version and repository link"), upstreamVersion, upstreamURL], upstreamURL);
+  addParagraph(NSLocalizedStringWithDefaultValue(@"ABOUT_FORK_TOUCH_ID_CREDITS", nil, NSBundle.mainBundle, @"Touch ID code shared by orestesgaolin and Anand Hegde.", @"About panel: credit for the Touch ID code"), nil);
+  addParagraph(NSLocalizedStringWithDefaultValue(@"ABOUT_FORK_LICENSE", nil, NSBundle.mainBundle, @"Free software under the GNU General Public License version 3, without any warranty. Report problems to this fork, not to the MacPass team. There are no automatic updates.", @"About panel: license, support and update notice"), nil);
+  return [credits copy];
 }
 
 #pragma mark -

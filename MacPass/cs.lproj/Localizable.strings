@@ -79,12 +79,6 @@
 /* Alert message text to ask the user if he really want to uninstall the plugin. Include %@ placeholder for plugin name */
 "ALERT_MESSAGE_TEXT_REALLY_UNINSTALL_PLUGIN_%@" = "Opravdu chcete odinstalovat plugin %@?";
 
-/* Informative text of the disabled updates alert! */
-"ALERT_UPDATES_DISABLED_INFORMATIVE_TEXT_%@!" = "Aktualizace jsou pro toto sestavení aplikace %@ vypnuté!";
-
-/* Message text for disabled updates alert! */
-"ALERT_UPDATES_DISABLED_MESSAGE_TEXT" = "Aktualizace jsou vypnuté!";
-
 /* Attachments column title (shows counts)
    Menu item to toggle display of attachment count column in entry table */
 "ATTACHMENTS" = "Přílohy";
@@ -827,9 +821,6 @@
 
 /* No comment provided by engineer. */
 "UNKNOWN_TOOLBAR_ITEM" = "Neznámá položka panelu nástrojů";
-
-/* Update Settings Label */
-"UPDATE_PREFERENCES" = "Aktualizace";
 
 /* Menu item to toggle display of url column in entry table
    Submenu with options what to do with the URL of an entry
