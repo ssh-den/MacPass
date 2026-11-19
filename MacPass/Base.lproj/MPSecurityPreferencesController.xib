@@ -19,6 +19,7 @@
                 <outlet property="preventUniversalClipboardSupportCheckButton" destination="FmI-t1-V7h" id="TaZ-DV-zxI"/>
                 <outlet property="rememberKeyFileCheckButton" destination="ghE-Zl-B1s" id="Nq4-jV-9iF"/>
                 <outlet property="touchIdKeyTimeOutPopup" destination="Tid-Pp-u01" id="Tid-Ol-u01"/>
+                <outlet property="touchIdPromptAutomaticallyCheckButton" destination="Tid-Ap-p01" id="Tid-Ol-a01"/>
                 <outlet property="view" destination="Hz6-mo-xeY" id="0bl-1N-x8E"/>
             </connections>
         </customObject>
@@ -155,6 +156,13 @@
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
                         </button>
+                        <button toolTip="Show the Touch ID prompt when a locked database opens and when you return to MacPass" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Tid-Ap-p01">
+                            <rect key="frame" x="-2" y="211" width="215" height="18"/>
+                            <buttonCell key="cell" type="check" title="Ask for Touch ID automatically" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Tid-Ac-p01">
+                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                        </button>
                         <stackView distribution="fill" orientation="horizontal" alignment="firstBaseline" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Tid-St-a01">
                             <rect key="frame" x="0.0" y="187" width="254" height="20"/>
                             <subviews>
@@ -269,8 +277,10 @@
                         <integer value="1000"/>
                         <integer value="1000"/>
                         <integer value="1000"/>
+                        <integer value="1000"/>
                     </visibilityPriorities>
                     <customSpacing>
+                        <real value="3.4028234663852886e+38"/>
                         <real value="3.4028234663852886e+38"/>
                         <real value="3.4028234663852886e+38"/>
                         <real value="3.4028234663852886e+38"/>

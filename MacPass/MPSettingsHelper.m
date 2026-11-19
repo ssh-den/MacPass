@@ -75,6 +75,7 @@ NSString *const kMPSettingsKeyTouchIdEncryptedKeyStore                          
 NSString *const kMPSettingsKeyTouchIdKeyDateStore                               = @"TouchIdKeyDateStore";
 NSString *const kMPSettingsKeyTouchIdKeyTimeOut                                 = @"TouchIdKeyTimeOut";
 NSString *const kMPSettingsKeyClearTouchIdKeysOnSleep                           = @"ClearTouchIdKeysOnSleep";
+NSString *const kMPSettingsKeyTouchIdPromptAutomatically                        = @"TouchIdPromptAutomatically";
 
 NSString *const kMPSettingsKeyTouchIdUnlockShortcutEnabled = @"TouchIdUnlockShortcutEnabled";
 NSString *const kMPSettingsKeyTouchIdUnlockShortcutKeyDataKey = @"TouchIdUnlockShortcutKeyDataKey";
@@ -163,6 +164,7 @@ NSString *const kMPDepricatedSettingsKeyEntryTouchIdDatabaseEncryptedKeyFormat  
       kMPSettingsKeyTouchIdEnabled: @(MPTouchIDKeyStorageDisabled),
       kMPSettingsKeyTouchIdKeyTimeOut: @0,
       kMPSettingsKeyClearTouchIdKeysOnSleep: @NO,
+      kMPSettingsKeyTouchIdPromptAutomatically: @YES,
       kMPSettingsKeyLegacyHideNotes: @NO,
       kMPSettingsKeyLegacyHidePassword: @YES,
       kMPSettingsKeyLegacyHideTitle: @NO,

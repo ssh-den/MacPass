@@ -239,6 +239,9 @@ static const CFTimeInterval MPTouchIDPromptActivationGrace = 1.0;
   if(self.touchIdUnlockInProgress || [self _touchIdPromptEndedRecently]) {
     return;
   }
+  if(![NSUserDefaults.standardUserDefaults boolForKey:kMPSettingsKeyTouchIdPromptAutomatically]) {
+    return;
+  }
   if(self.completionHandler && self.view.window.isVisible) {
     self.automaticTouchIDPending = YES;
   }

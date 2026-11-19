@@ -1,6 +1,6 @@
 # MacPass — Touch ID fork
 
-This fork of [MacPass](https://github.com/MacPass/MacPass) improves Touch ID unlock with a dedicated unlock view, a configurable keyboard shortcut, and automatic Touch ID prompts when global autotype needs to unlock a database. It also adds settings to expire stored Touch ID keys, clear them on sleep, or forget them manually. On macOS 13 and later it can fill website passwords from the active database through macOS Password AutoFill.
+This fork of [MacPass](https://github.com/MacPass/MacPass) improves Touch ID unlock with a dedicated unlock view, a configurable keyboard shortcut, and automatic Touch ID prompts when a locked database opens, when you return to MacPass, and when global autotype needs to unlock a database (Settings → Security → “Ask for Touch ID automatically”, on by default). It also adds settings to expire stored Touch ID keys, clear them on sleep, or forget them manually. On macOS 13 and later it can fill website passwords from the active database through macOS Password AutoFill.
 
 Fork versions are named after the MacPass release they are based on, such as `0.8.2-fork.1`. The fork has no automatic updates: build a new version to update. Plugins still check compatibility against the upstream MacPass version.
 

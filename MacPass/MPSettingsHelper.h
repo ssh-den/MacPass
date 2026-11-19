@@ -28,6 +28,7 @@ APPKIT_EXTERN NSString *const kMPSettingsKeyTouchIdEncryptedKeyStore;       // N
 APPKIT_EXTERN NSString *const kMPSettingsKeyTouchIdKeyDateStore;            // NSDictionary - key storage dates
 APPKIT_EXTERN NSString *const kMPSettingsKeyTouchIdKeyTimeOut;              // Seconds; 0 disables expiration
 APPKIT_EXTERN NSString *const kMPSettingsKeyClearTouchIdKeysOnSleep;        // BOOL
+APPKIT_EXTERN NSString *const kMPSettingsKeyTouchIdPromptAutomatically;     // BOOL - ask on open and when returning to MacPass
 
 APPKIT_EXTERN NSString *const kMPSettingsKeyTouchIdUnlockShortcutEnabled;   // BOOL
 APPKIT_EXTERN NSString *const kMPSettingsKeyTouchIdUnlockShortcutKeyDataKey; // NSData - encoded DDHotKey

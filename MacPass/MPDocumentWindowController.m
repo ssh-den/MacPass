@@ -158,8 +158,9 @@ typedef void (^MPPasswordChangedBlock)(BOOL didChangePassword);
   self.toolbarDelegate.toolbar = self.toolbar;
   
   if(document.encrypted) {
-    /* Opening a database asks for Touch ID right away instead of waiting for the button */
-    [self showPasswordInputWithMessage:nil attemptTouchID:YES];
+    /* Opening a database asks for Touch ID right away instead of waiting for the button, unless turned off */
+    BOOL promptAutomatically = [NSUserDefaults.standardUserDefaults boolForKey:kMPSettingsKeyTouchIdPromptAutomatically];
+    [self showPasswordInputWithMessage:nil attemptTouchID:promptAutomatically];
   }
   else {
     [self showEntries];

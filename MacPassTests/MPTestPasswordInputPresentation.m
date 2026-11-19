@@ -166,6 +166,8 @@
   MPSecurityPreferencesController *controller = [[MPSecurityPreferencesController alloc] init];
   XCTAssertNotNil(controller.view);
   XCTAssertNotNil(controller.clearTouchIdKeysOnSleepCheckButton);
+  XCTAssertEqualObjects([controller.touchIdPromptAutomaticallyCheckButton infoForBinding:NSValueBinding][NSObservedKeyPathKey],
+                        [MPSettingsHelper defaultControllerPathForKey:kMPSettingsKeyTouchIdPromptAutomatically]);
   NSArray *tags = [controller.touchIdKeyTimeOutPopup.itemArray valueForKey:@"tag"];
   XCTAssertEqualObjects(tags, (@[@0, @3600, @14400, @86400, @604800]));
 }
@@ -292,6 +294,27 @@
   [controller _applicationDidResignActive:nil];
   XCTAssertTrue([[controller valueForKey:@"automaticTouchIDPending"] boolValue]);
   [window orderOut:nil];
+}
+
+- (void)testTurnedOffSettingKeepsTouchIDOnTheButton {
+  NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
+  id previous = [defaults objectForKey:kMPSettingsKeyTouchIdPromptAutomatically];
+  [defaults setBool:NO forKey:kMPSettingsKeyTouchIdPromptAutomatically];
+  MPTestTouchIDActionController *controller = [[MPTestTouchIDActionController alloc] init];
+  NSWindow *window = [NSWindow windowWithContentViewController:controller];
+  [window orderFront:nil];
+  [controller requestPasswordWithMessage:nil cancelLabel:nil attemptTouchID:NO completionHandler:^BOOL(KPKCompositeKey *key, NSURL *url, BOOL cancel, NSError **error) {
+    return YES;
+  }];
+  [controller _applicationDidResignActive:nil];
+  XCTAssertFalse([[controller valueForKey:@"automaticTouchIDPending"] boolValue]);
+  [window orderOut:nil];
+  if(previous) {
+    [defaults setObject:previous forKey:kMPSettingsKeyTouchIdPromptAutomatically];
+  }
+  else {
+    [defaults removeObjectForKey:kMPSettingsKeyTouchIdPromptAutomatically];
+  }
 }
 
 - (MPPasswordInputPresentationState)stateForMode:(MPTouchIDKeyStorage)mode

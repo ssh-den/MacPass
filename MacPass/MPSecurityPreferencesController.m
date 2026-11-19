@@ -56,6 +56,10 @@
                      toObject:NSUserDefaultsController.sharedUserDefaultsController
                   withKeyPath:[MPSettingsHelper defaultControllerPathForKey:kMPSettingsKeyIdleLockTimeOut]
                       options:nil];
+  [self.touchIdPromptAutomaticallyCheckButton bind:NSValueBinding
+                                          toObject:NSUserDefaultsController.sharedUserDefaultsController
+                                       withKeyPath:[MPSettingsHelper defaultControllerPathForKey:kMPSettingsKeyTouchIdPromptAutomatically]
+                                           options:nil];
   [self.touchIdKeyTimeOutPopup bind:NSSelectedTagBinding
                            toObject:NSUserDefaultsController.sharedUserDefaultsController
                         withKeyPath:[MPSettingsHelper defaultControllerPathForKey:kMPSettingsKeyTouchIdKeyTimeOut]
